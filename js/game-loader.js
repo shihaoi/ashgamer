@@ -63,12 +63,12 @@ class GameLoader {
                 tags: ['益智', '数字', '策略'],
                 thumbnail: 'images/games/2048.jpg'
             },
-            'flappy-bird': {
-                url: 'games/flappy-bird.html',
+            'flappybird': {
+                url: 'games/flappybird.html',
                 title: '像素鸟',
                 description: '控制小鸟穿过障碍物，看看你能飞多远！',
                 tags: ['休闲', '技巧', '挑战'],
-                thumbnail: 'images/games/flappy-bird.jpg'
+                thumbnail: 'images/games/flappybird.jpg'
             },
             'breakout': {
                 url: 'games/breakout.html',
