@@ -1,72 +1,97 @@
-# CrazyGames 克隆项目
+# HelloGame - 免费在线HTML5游戏平台
 
-这是一个模仿 [CrazyGames](https://www.crazygames.com/) 的Web游戏平台项目。本项目仅用于学习和练习前端开发技能，不用于商业目的。
+HelloGame是一个提供免费在线HTML5游戏的平台，包括动作、益智、策略等多种类型游戏。网站采用响应式设计，支持PC端和移动端访问。
 
 ## 项目结构
 
 ```
 hellogame/
-├── public/           # 静态资源目录
-│   ├── css/          # CSS样式文件
-│   ├── js/           # JavaScript文件
-│   └── images/       # 图片资源
-├── src/              # 源代码目录
-│   ├── components/   # 组件
-│   └── utils/        # 工具类
-├── index.html        # 主页HTML
-└── README.md         # 项目说明
+│
+├── public/              # 静态资源
+│   ├── css/            # 样式文件
+│   ├── js/             # JavaScript文件
+│   ├── images/         # 图片资源
+│   └── games/          # 游戏文件
+│
+├── src/                 # 源代码
+│   ├── api/            # API接口
+│   ├── components/     # 组件
+│   └── utils/          # 工具函数
+│
+├── index.html           # 主页
+├── category.html        # 分类页
+├── game.html            # 游戏详情页
+└── README.md            # 项目说明
 ```
 
-## 功能特性
+## 特色功能
 
-- 响应式设计，支持各种设备
-- 游戏分类浏览
-- 游戏搜索功能
-- 多语言支持
-- 原创游戏、精选游戏和新游戏展示
-- 本地和在线多人游戏支持
+- 多种游戏分类：动作、益智、策略、休闲等
+- 响应式设计：完美支持PC和移动设备
+- 多语言支持：支持中文和英文
+- 游戏收藏功能：用户可以收藏喜欢的游戏
+- 游戏搜索功能：快速找到想玩的游戏
+- 游戏推荐系统：基于用户喜好推荐游戏
+- 黑暗模式：提供更舒适的夜间游戏体验
 
 ## 本地运行
 
 1. 克隆项目到本地
-   ```
-   git clone https://github.com/yourusername/hellogame.git
-   cd hellogame
-   ```
+```bash
+git clone https://github.com/您的用户名/hellogame.git
+cd hellogame
+```
 
-2. 使用任意HTTP服务器运行项目，例如使用Python的SimpleHTTPServer:
-   ```
-   python -m http.server
-   ```
+2. 使用本地服务器运行项目（任选一种）
+```bash
+# 使用Python自带的HTTP服务器
+python -m http.server
 
-   或者使用Node.js的http-server:
-   ```
-   npx http-server
-   ```
+# 或使用Node.js的http-server（需先安装）
+npx http-server
+```
 
-3. 在浏览器中访问 `http://localhost:8000` 或对应端口
+3. 在浏览器中访问 `http://localhost:8000` 或 `http://localhost:8080`
+
+## 使用GitHub Pages部署
+
+您可以使用GitHub Pages免费部署这个项目：
+
+1. 在GitHub上创建一个新仓库
+
+2. 将项目推送到GitHub
+```bash
+git remote add origin https://github.com/您的用户名/hellogame.git
+git push -u origin main
+```
+
+3. 在GitHub仓库设置中启用GitHub Pages
+   - 进入仓库页面，点击"Settings"
+   - 左侧菜单找到"Pages"
+   - 在"Source"部分，选择"main"分支和"/(root)"文件夹
+   - 点击"Save"按钮
+
+4. 几分钟后，您的网站将在 `https://您的用户名.github.io/hellogame` 上线
 
 ## 技术栈
 
-- HTML5
-- CSS3 (包括CSS变量、Flexbox和Grid布局)
-- 原生JavaScript (ES6+)
+- HTML5 + CSS3 + JavaScript
 - 响应式设计
-- 本地存储 (localStorage)
+- 本地存储API（localStorage）
+- 现代CSS布局技术（Flexbox、Grid）
 
 ## 未来计划
 
-- 添加更多游戏资源
-- 实现用户账户系统
-- 添加游戏评分和评论功能
-- 改进搜索算法
-- 集成支付系统
-- 开发更多原创游戏
+- 添加更多游戏内容
+- 实现用户登录和注册功能
+- 添加游戏排行榜和成就系统
+- 优化游戏加载速度
+- 实现游戏数据云存储功能
 
 ## 许可证
 
-MIT
+本项目采用[MIT许可证](https://opensource.org/licenses/MIT)。
 
 ## 免责声明
 
-本项目仅用于学习和教育目的，与官方CrazyGames网站无关。所有游戏名称和图片仅作示例使用。 
+本项目仅用于学习和教育目的，与商业游戏平台没有任何关联。所有游戏内容均为开源或自行开发，如有侵权，请联系我们删除。# ashgamer
