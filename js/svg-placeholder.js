@@ -1,151 +1,461 @@
 /**
  * SVG占位图生成器
- * 用于生成各种类型的占位SVG图像
+ * 用于动态生成各种尺寸和样式的SVG占位图
  */
 class SVGPlaceholder {
-  /**
-   * 创建游戏卡片图像
-   * @param {string} title 游戏标题
-   * @param {string} category 游戏分类
-   * @param {string} color 主要颜色
-   * @returns {string} SVG图像的Data URL
-   */
-  static createGameCard(title, category, color = '#4a6cf7') {
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="480" height="270" viewBox="0 0 480 270">
-        <rect width="480" height="270" fill="${color}" opacity="0.2"/>
-        <rect width="480" height="270" fill="url(#game-pattern)" opacity="0.3"/>
-        <rect width="480" height="270" stroke="${color}" stroke-width="2" fill="none"/>
-        <text x="50%" y="45%" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#333">${title}</text>
-        <text x="50%" y="55%" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#666">${category}</text>
-        <defs>
-          <pattern id="game-pattern" patternUnits="userSpaceOnUse" width="20" height="20" patternTransform="rotate(45)">
-            <rect width="2" height="2" fill="${color}" opacity="0.3"/>
-          </pattern>
-        </defs>
-      </svg>
-    `;
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
-  
-  /**
-   * 创建Logo图像
-   * @returns {string} SVG图像的Data URL
-   */
-  static createLogo() {
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="150" height="50" viewBox="0 0 150 50">
-        <text x="50%" y="48%" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#4a6cf7">
-          HelloGame
-        </text>
-        <circle cx="20" cy="25" r="15" fill="#4a6cf7" opacity="0.8"/>
-        <path d="M15,23 L15,27 L25,27 L25,32 L29,25 L25,18 L25,23 Z" fill="white"/>
-      </svg>
-    `;
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
+    /**
+     * 构造函数
+     * @param {Object} options 配置选项
+     */
+    constructor(options = {}) {
+        this.options = {
+            colors: {
+                primary: '#6b46e5',
+                secondary: '#5639b8',
+                background: '#f0f2f7',
+                text: '#333333'
+            },
+            fontFamily: 'Arial, sans-serif',
+            ...options
+        };
 
-  /**
-   * 创建Hero背景图像
-   * @returns {string} SVG图像的Data URL
-   */
-  static createHeroBackground() {
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400">
-        <rect width="800" height="400" fill="#4a6cf7" opacity="0.1"/>
-        <rect width="800" height="400" fill="url(#hero-pattern)" opacity="0.4"/>
-        <g transform="translate(400, 200)">
-          <circle cx="0" cy="0" r="100" fill="#4a6cf7" opacity="0.2"/>
-          <circle cx="-120" cy="-60" r="40" fill="#4a6cf7" opacity="0.3"/>
-          <circle cx="150" cy="80" r="60" fill="#4a6cf7" opacity="0.1"/>
-          <path d="M-50,-50 L50,-50 L0,50 Z" fill="#4a6cf7" opacity="0.2"/>
-          <rect x="-180" y="20" width="80" height="80" rx="10" fill="#4a6cf7" opacity="0.2"/>
-        </g>
-        <defs>
-          <pattern id="hero-pattern" patternUnits="userSpaceOnUse" width="30" height="30" patternTransform="rotate(30)">
-            <rect width="3" height="3" fill="#4a6cf7" opacity="0.2"/>
-          </pattern>
-        </defs>
-      </svg>
-    `;
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
+        this.init();
+    }
 
-  /**
-   * 创建关于我们图像
-   * @returns {string} SVG图像的Data URL
-   */
-  static createAboutImage() {
-    const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400">
-        <rect width="600" height="400" fill="#f7f9fc"/>
-        <rect width="600" height="400" fill="url(#about-pattern)" opacity="0.4"/>
-        <g transform="translate(300, 200)">
-          <circle cx="0" cy="0" r="80" fill="#4a6cf7" opacity="0.1"/>
-          <rect x="-150" y="-30" width="300" height="60" rx="10" fill="#4a6cf7" opacity="0.1"/>
-          <text x="0" y="10" font-family="Arial, sans-serif" font-size="20" text-anchor="middle" fill="#333">关于 HelloGame</text>
-          <path d="M-40,50 L40,50 L0,90 Z" fill="#4a6cf7" opacity="0.2"/>
-        </g>
-        <defs>
-          <pattern id="about-pattern" patternUnits="userSpaceOnUse" width="20" height="20" patternTransform="rotate(45)">
-            <rect width="2" height="2" fill="#4a6cf7" opacity="0.1"/>
-          </pattern>
-        </defs>
-      </svg>
-    `;
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
+    /**
+     * 初始化
+     */
+    init() {
+        // 在页面加载完成后替换占位图
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.replacePlaceholders());
+        } else {
+            this.replacePlaceholders();
+        }
 
-  /**
-   * 替换图片元素的src为SVG数据
-   * @param {boolean} useSVGPlaceholders 是否使用SVG占位图
-   */
-  static replacePlaceholders(useSVGPlaceholders = true) {
-    if (!useSVGPlaceholders) return;
-    
-    // 替换Logo
-    const logoImgs = document.querySelectorAll('.logo img');
-    logoImgs.forEach(img => {
-      img.src = SVGPlaceholder.createLogo();
-      img.classList.remove('lazy');
-    });
-    
-    // 替换Hero背景图
-    const heroImgs = document.querySelectorAll('.hero-image img');
-    heroImgs.forEach(img => {
-      img.src = SVGPlaceholder.createHeroBackground();
-      img.classList.remove('lazy');
-    });
-    
-    // 替换关于我们图像
-    const aboutImgs = document.querySelectorAll('.about-image img');
-    aboutImgs.forEach(img => {
-      img.src = SVGPlaceholder.createAboutImage();
-      img.classList.remove('lazy');
-    });
-    
-    // 替换游戏卡片图像
-    const gameImages = document.querySelectorAll('.game-img img, .original-game-img img, .game-thumbnail img');
-    gameImages.forEach(img => {
-      const title = img.getAttribute('alt') || '游戏';
-      const category = img.closest('.game-card') ? 
-        img.closest('.game-card').querySelector('.game-category')?.textContent || '休闲' : 
-        '休闲';
-      
-      // 为不同游戏生成不同颜色
-      let color = '#4a6cf7';
-      if (title.includes('贪吃蛇')) color = '#5cb85c';
-      if (title.includes('射击')) color = '#d9534f';
-      if (title.includes('方块') || title.includes('俄罗斯')) color = '#f0ad4e';
-      if (title.includes('2048')) color = '#5bc0de';
-      
-      img.src = SVGPlaceholder.createGameCard(title, category, color);
-      img.classList.remove('lazy');
-    });
-  }
+        // 监听动态添加的元素
+        this.observeDynamicElements();
+    }
+
+    /**
+     * 将未加载的图片替换为SVG占位图
+     */
+    replacePlaceholders() {
+        const images = document.querySelectorAll('img');
+        
+        images.forEach(img => {
+            const src = img.getAttribute('src') || img.getAttribute('data-src');
+            
+            // 如果图片没有源或者源是空字符串，则替换为占位图
+            if (!src || src === '' || src.startsWith('data:')) {
+                const parent = img.parentElement;
+                const width = img.getAttribute('width') || img.clientWidth || 300;
+                const height = img.getAttribute('height') || img.clientHeight || 200;
+                const alt = img.getAttribute('alt') || 'Placeholder';
+                const classList = img.className;
+                let type = 'general';
+                
+                // 根据类名或父元素确定占位图类型
+                if (parent && parent.classList.contains('logo')) {
+                    type = 'logo';
+                } else if (parent && (parent.classList.contains('game-thumbnail') || parent.classList.contains('game-img'))) {
+                    type = 'game';
+                } else if (classList && classList.includes('hero')) {
+                    type = 'hero';
+                }
+                
+                const svgURL = this.generateSVGDataURL(width, height, alt, type);
+                img.setAttribute('src', svgURL);
+            }
+        });
+    }
+
+    /**
+     * 观察动态添加的元素
+     */
+    observeDynamicElements() {
+        if (!window.MutationObserver) return;
+        
+        const observer = new MutationObserver(mutations => {
+            let hasNewImages = false;
+            
+            mutations.forEach(mutation => {
+                if (mutation.addedNodes.length) {
+                    for (let i = 0; i < mutation.addedNodes.length; i++) {
+                        const node = mutation.addedNodes[i];
+                        
+                        if (node.nodeType === 1) { // ELEMENT_NODE
+                            if (node.tagName === 'IMG') {
+                                hasNewImages = true;
+                            } else if (node.querySelectorAll) {
+                                const images = node.querySelectorAll('img');
+                                if (images.length) {
+                                    hasNewImages = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            if (hasNewImages) {
+                this.replacePlaceholders();
+            }
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    /**
+     * 生成SVG占位图的Data URL
+     * @param {number} width 宽度
+     * @param {number} height 高度
+     * @param {string} text 文本
+     * @param {string} type 类型 (logo, game, hero, general)
+     * @returns {string} SVG Data URL
+     */
+    generateSVGDataURL(width, height, text, type = 'general') {
+        const svg = this.createSVG(width, height, text, type);
+        const svgString = new XMLSerializer().serializeToString(svg);
+        const encodedSVG = encodeURIComponent(svgString);
+        return `data:image/svg+xml;charset=utf-8,${encodedSVG}`;
+    }
+
+    /**
+     * 创建SVG元素
+     * @param {number} width 宽度
+     * @param {number} height 高度
+     * @param {string} text 文本
+     * @param {string} type 类型
+     * @returns {SVGElement} SVG元素
+     */
+    createSVG(width, height, text, type) {
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', width);
+        svg.setAttribute('height', height);
+        svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+        svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        
+        // 添加背景
+        const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        bg.setAttribute('width', width);
+        bg.setAttribute('height', height);
+        bg.setAttribute('fill', this.options.colors.background);
+        svg.appendChild(bg);
+        
+        // 根据类型生成不同的SVG内容
+        switch (type) {
+            case 'logo':
+                this.createLogoSVG(svg, width, height, text);
+                break;
+            case 'game':
+                this.createGameSVG(svg, width, height, text);
+                break;
+            case 'hero':
+                this.createHeroSVG(svg, width, height, text);
+                break;
+            default:
+                this.createGeneralSVG(svg, width, height, text);
+                break;
+        }
+        
+        return svg;
+    }
+
+    /**
+     * 创建Logo类型的SVG
+     * @param {SVGElement} svg SVG元素
+     * @param {number} width 宽度
+     * @param {number} height 高度
+     * @param {string} text 文本
+     */
+    createLogoSVG(svg, width, height, text) {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        const radius = Math.min(width, height) * 0.35;
+        circle.setAttribute('cx', width / 2);
+        circle.setAttribute('cy', height / 2);
+        circle.setAttribute('r', radius);
+        circle.setAttribute('fill', this.options.colors.primary);
+        svg.appendChild(circle);
+        
+        const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        textElem.setAttribute('x', width / 2);
+        textElem.setAttribute('y', height / 2 + 5);
+        textElem.setAttribute('font-family', this.options.fontFamily);
+        textElem.setAttribute('font-size', `${radius * 0.8}px`);
+        textElem.setAttribute('fill', '#ffffff');
+        textElem.setAttribute('text-anchor', 'middle');
+        textElem.setAttribute('dominant-baseline', 'middle');
+        
+        // 获取文本的首字母
+        const initial = text.charAt(0).toUpperCase();
+        textElem.textContent = initial;
+        
+        svg.appendChild(textElem);
+    }
+
+    /**
+     * 创建游戏类型的SVG
+     * @param {SVGElement} svg SVG元素
+     * @param {number} width 宽度
+     * @param {number} height 高度
+     * @param {string} text 文本
+     */
+    createGameSVG(svg, width, height, text) {
+        // 创建渐变背景
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradient.setAttribute('id', 'gameGradient');
+        gradient.setAttribute('x1', '0%');
+        gradient.setAttribute('y1', '0%');
+        gradient.setAttribute('x2', '100%');
+        gradient.setAttribute('y2', '100%');
+        
+        const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop1.setAttribute('offset', '0%');
+        stop1.setAttribute('stop-color', this.options.colors.primary);
+        
+        const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop2.setAttribute('offset', '100%');
+        stop2.setAttribute('stop-color', this.options.colors.secondary);
+        
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        defs.appendChild(gradient);
+        svg.appendChild(defs);
+        
+        // 创建背景
+        const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        bg.setAttribute('width', width);
+        bg.setAttribute('height', height);
+        bg.setAttribute('fill', 'url(#gameGradient)');
+        svg.appendChild(bg);
+        
+        // 创建游戏控制器图标
+        const gamepadSize = Math.min(width, height) * 0.4;
+        const gamepadGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        gamepadGroup.setAttribute('transform', `translate(${width / 2 - gamepadSize / 2}, ${height / 2 - gamepadSize / 2})`);
+        
+        // 简化的游戏控制器形状
+        const controller = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        controller.setAttribute('d', `
+            M${gamepadSize * 0.2},${gamepadSize * 0.4}
+            Q${gamepadSize * 0.1},${gamepadSize * 0.5} ${gamepadSize * 0.2},${gamepadSize * 0.6}
+            L${gamepadSize * 0.3},${gamepadSize * 0.8}
+            Q${gamepadSize * 0.4},${gamepadSize * 0.9} ${gamepadSize * 0.6},${gamepadSize * 0.9}
+            L${gamepadSize * 0.7},${gamepadSize * 0.8}
+            Q${gamepadSize * 0.8},${gamepadSize * 0.9} ${gamepadSize * 0.9},${gamepadSize * 0.8}
+            L${gamepadSize * 0.8},${gamepadSize * 0.6}
+            Q${gamepadSize * 0.9},${gamepadSize * 0.5} ${gamepadSize * 0.8},${gamepadSize * 0.4}
+            L${gamepadSize * 0.6},${gamepadSize * 0.2}
+            Q${gamepadSize * 0.5},${gamepadSize * 0.1} ${gamepadSize * 0.4},${gamepadSize * 0.2}
+            Z
+        `);
+        controller.setAttribute('fill', '#ffffff');
+        controller.setAttribute('opacity', '0.8');
+        gamepadGroup.appendChild(controller);
+        
+        // 按钮
+        const button1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        button1.setAttribute('cx', gamepadSize * 0.7);
+        button1.setAttribute('cy', gamepadSize * 0.5);
+        button1.setAttribute('r', gamepadSize * 0.05);
+        button1.setAttribute('fill', '#ffffff');
+        
+        const button2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        button2.setAttribute('cx', gamepadSize * 0.6);
+        button2.setAttribute('cy', gamepadSize * 0.4);
+        button2.setAttribute('r', gamepadSize * 0.05);
+        button2.setAttribute('fill', '#ffffff');
+        
+        gamepadGroup.appendChild(button1);
+        gamepadGroup.appendChild(button2);
+        svg.appendChild(gamepadGroup);
+        
+        // 添加文本
+        const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        textElem.setAttribute('x', width / 2);
+        textElem.setAttribute('y', height * 0.85);
+        textElem.setAttribute('font-family', this.options.fontFamily);
+        textElem.setAttribute('font-size', `${Math.min(width, height) * 0.1}px`);
+        textElem.setAttribute('fill', '#ffffff');
+        textElem.setAttribute('text-anchor', 'middle');
+        
+        // 限制文本长度
+        let displayText = text;
+        if (displayText.length > 15) {
+            displayText = displayText.substr(0, 12) + '...';
+        }
+        textElem.textContent = displayText;
+        
+        svg.appendChild(textElem);
+    }
+
+    /**
+     * 创建英雄/头部大图类型的SVG
+     * @param {SVGElement} svg SVG元素
+     * @param {number} width 宽度
+     * @param {number} height 高度
+     * @param {string} text 文本
+     */
+    createHeroSVG(svg, width, height, text) {
+        // 创建渐变背景
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const gradient = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        gradient.setAttribute('id', 'heroGradient');
+        gradient.setAttribute('x1', '0%');
+        gradient.setAttribute('y1', '0%');
+        gradient.setAttribute('x2', '100%');
+        gradient.setAttribute('y2', '100%');
+        
+        const stop1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop1.setAttribute('offset', '0%');
+        stop1.setAttribute('stop-color', '#4158D0');
+        
+        const stop2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop2.setAttribute('offset', '50%');
+        stop2.setAttribute('stop-color', '#C850C0');
+        
+        const stop3 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        stop3.setAttribute('offset', '100%');
+        stop3.setAttribute('stop-color', '#FFCC70');
+        
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        gradient.appendChild(stop3);
+        defs.appendChild(gradient);
+        svg.appendChild(defs);
+        
+        // 创建背景
+        const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        bg.setAttribute('width', width);
+        bg.setAttribute('height', height);
+        bg.setAttribute('fill', 'url(#heroGradient)');
+        svg.appendChild(bg);
+        
+        // 添加装饰图形
+        for (let i = 0; i < 8; i++) {
+            const shape = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            const size = Math.random() * (width * 0.2) + (width * 0.05);
+            const x = Math.random() * width;
+            const y = Math.random() * height;
+            shape.setAttribute('cx', x);
+            shape.setAttribute('cy', y);
+            shape.setAttribute('r', size);
+            shape.setAttribute('fill', '#ffffff');
+            shape.setAttribute('opacity', Math.random() * 0.1 + 0.05);
+            svg.appendChild(shape);
+        }
+        
+        // 添加文本
+        const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        textElem.setAttribute('x', width / 2);
+        textElem.setAttribute('y', height / 2);
+        textElem.setAttribute('font-family', this.options.fontFamily);
+        textElem.setAttribute('font-size', `${Math.min(width, height) * 0.15}px`);
+        textElem.setAttribute('fill', '#ffffff');
+        textElem.setAttribute('text-anchor', 'middle');
+        textElem.setAttribute('dominant-baseline', 'middle');
+        textElem.setAttribute('font-weight', 'bold');
+        
+        // 限制文本长度
+        let displayText = text;
+        if (displayText.length > 20) {
+            displayText = displayText.substr(0, 17) + '...';
+        }
+        textElem.textContent = 'HelloGame';
+        
+        const subtitle = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        subtitle.setAttribute('x', width / 2);
+        subtitle.setAttribute('y', height / 2 + Math.min(width, height) * 0.1);
+        subtitle.setAttribute('font-family', this.options.fontFamily);
+        subtitle.setAttribute('font-size', `${Math.min(width, height) * 0.06}px`);
+        subtitle.setAttribute('fill', '#ffffff');
+        subtitle.setAttribute('text-anchor', 'middle');
+        subtitle.setAttribute('dominant-baseline', 'middle');
+        subtitle.textContent = '免费在线HTML5游戏';
+        
+        svg.appendChild(textElem);
+        svg.appendChild(subtitle);
+    }
+
+    /**
+     * 创建通用类型的SVG
+     * @param {SVGElement} svg SVG元素
+     * @param {number} width 宽度
+     * @param {number} height 高度
+     * @param {string} text 文本
+     */
+    createGeneralSVG(svg, width, height, text) {
+        // 创建几何图形背景
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const minDimension = Math.min(width, height);
+        
+        // 创建圆形
+        const circle1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle1.setAttribute('cx', centerX - minDimension * 0.15);
+        circle1.setAttribute('cy', centerY - minDimension * 0.15);
+        circle1.setAttribute('r', minDimension * 0.1);
+        circle1.setAttribute('fill', this.options.colors.primary);
+        circle1.setAttribute('opacity', '0.7');
+        svg.appendChild(circle1);
+        
+        // 创建矩形
+        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rect.setAttribute('x', centerX - minDimension * 0.3);
+        rect.setAttribute('y', centerY + minDimension * 0.1);
+        rect.setAttribute('width', minDimension * 0.1);
+        rect.setAttribute('height', minDimension * 0.1);
+        rect.setAttribute('fill', this.options.colors.primary);
+        rect.setAttribute('opacity', '0.7');
+        svg.appendChild(rect);
+        
+        // 创建三角形
+        const triangle = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+        const triangleSize = minDimension * 0.15;
+        triangle.setAttribute('points', `
+            ${centerX},${centerY - triangleSize / 2}
+            ${centerX + triangleSize / 2},${centerY + triangleSize / 2}
+            ${centerX - triangleSize / 2},${centerY + triangleSize / 2}
+        `);
+        triangle.setAttribute('fill', this.options.colors.secondary);
+        triangle.setAttribute('opacity', '0.7');
+        svg.appendChild(triangle);
+        
+        // 创建另一个圆形
+        const circle2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle2.setAttribute('cx', centerX + minDimension * 0.2);
+        circle2.setAttribute('cy', centerY + minDimension * 0.1);
+        circle2.setAttribute('r', minDimension * 0.08);
+        circle2.setAttribute('fill', this.options.colors.primary);
+        circle2.setAttribute('opacity', '0.7');
+        svg.appendChild(circle2);
+        
+        // 添加文本
+        if (minDimension > 100) {
+            const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textElem.setAttribute('x', width / 2);
+            textElem.setAttribute('y', height * 0.85);
+            textElem.setAttribute('font-family', this.options.fontFamily);
+            textElem.setAttribute('font-size', `${Math.min(width, height) * 0.08}px`);
+            textElem.setAttribute('fill', this.options.colors.text);
+            textElem.setAttribute('text-anchor', 'middle');
+            
+            // 限制文本长度
+            let displayText = text;
+            if (displayText.length > 20) {
+                displayText = displayText.substr(0, 17) + '...';
+            }
+            textElem.textContent = displayText;
+            
+            svg.appendChild(textElem);
+        }
+    }
 }
 
-// 在DOM加载完成后自动替换占位图
-document.addEventListener('DOMContentLoaded', () => {
-  SVGPlaceholder.replacePlaceholders();
-}); 
+// 创建占位图生成器实例
+const svgPlaceholder = new SVGPlaceholder(); 

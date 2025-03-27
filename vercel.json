@@ -2,27 +2,15 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
+  "github": {
+    "silent": true
+  },
+  "outputDirectory": ".",
+  "public": true,
   "rewrites": [
-    { "source": "/public/:path*", "destination": "/:path*" }
+    { "source": "/(.*)", "destination": "/$1" }
   ],
   "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    },
     {
       "source": "/(css|js|images)/(.*)",
       "headers": [
