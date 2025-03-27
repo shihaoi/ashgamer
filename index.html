@@ -9,21 +9,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preload" href="js/game-loader.js" as="script">
     <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="js/svg-placeholder.js"></script>
 </head>
 <body>
     <header class="site-header">
         <div class="header-container">
             <a href="index.html" class="logo">
-                <img src="images/logo.png" alt="HelloGame" class="lazy">
+                <img src="images/logo.png" alt="HelloGame">
                 <span>HelloGame</span>
             </a>
             <nav class="main-nav">
                 <ul>
-                    <li><a href="index.html" class="active">首页</a></li>
-                    <li><a href="category.html?category=热门">热门游戏</a></li>
-                    <li><a href="category.html?category=新游戏">新游戏</a></li>
-                    <li><a href="category.html?category=推荐">推荐</a></li>
+                    <li><a href="index.html" class="active"><i class="fas fa-home"></i> 首页</a></li>
+                    <li><a href="category.html?category=热门"><i class="fas fa-fire"></i> 热门游戏</a></li>
+                    <li><a href="category.html?category=新游戏"><i class="fas fa-star"></i> 新游戏</a></li>
+                    <li><a href="category.html?category=推荐"><i class="fas fa-thumbs-up"></i> 推荐</a></li>
                 </ul>
             </nav>
             <div class="header-actions">
@@ -65,14 +66,15 @@
 
         <section class="categories-nav">
             <div class="container">
-                <a href="category.html?category=动作">动作游戏</a>
-                <a href="category.html?category=益智">益智游戏</a>
-                <a href="category.html?category=策略">策略游戏</a>
-                <a href="category.html?category=射击">射击游戏</a>
-                <a href="category.html?category=冒险">冒险游戏</a>
-                <a href="category.html?category=休闲">休闲游戏</a>
-                <a href="category.html?category=模拟">模拟游戏</a>
-                <a href="category.html?category=多人">多人游戏</a>
+                <a href="category.html?category=动作"><i class="fas fa-gamepad"></i> 动作</a>
+                <a href="category.html?category=益智"><i class="fas fa-puzzle-piece"></i> 益智</a>
+                <a href="category.html?category=策略"><i class="fas fa-chess"></i> 策略</a>
+                <a href="category.html?category=射击"><i class="fas fa-crosshairs"></i> 射击</a>
+                <a href="category.html?category=冒险"><i class="fas fa-mountain"></i> 冒险</a>
+                <a href="category.html?category=休闲"><i class="fas fa-coffee"></i> 休闲</a>
+                <a href="category.html?category=模拟"><i class="fas fa-car"></i> 模拟</a>
+                <a href="category.html?category=多人"><i class="fas fa-users"></i> 多人</a>
+                <a href="category.html?category=排行榜"><i class="fas fa-trophy"></i> 排行榜</a>
             </div>
         </section>
 
@@ -344,6 +346,7 @@
                 <a href="game.html?id=${game.id}">
                     <div class="game-img">
                         <img data-src="${game.image}" alt="${game.title}" class="lazy">
+                        ${game.isNew ? '<span class="new-tag">NEW</span>' : ''}
                     </div>
                     <div class="game-info">
                         <h3>${game.title}</h3>
@@ -386,42 +389,48 @@
                     title: '俄罗斯方块',
                     category: '益智',
                     rating: 4.9,
-                    image: 'images/games/tetris.jpg'
+                    image: 'images/games/tetris.jpg',
+                    isNew: false
                 },
                 {
                     id: 'snake',
                     title: '贪吃蛇',
                     category: '休闲',
                     rating: 4.5,
-                    image: 'images/games/snake.jpg'
+                    image: 'images/games/snake.jpg',
+                    isNew: false
                 },
                 {
                     id: 'spaceshooter',
                     title: '太空射击',
                     category: '射击',
                     rating: 4.7,
-                    image: 'images/games/spaceshooter.jpg'
+                    image: 'images/games/spaceshooter.jpg',
+                    isNew: false
                 },
                 {
                     id: '2048',
                     title: '2048',
                     category: '益智',
                     rating: 4.8,
-                    image: 'images/games/2048.jpg'
+                    image: 'images/games/2048.jpg',
+                    isNew: false
                 },
                 {
                     id: 'flappybird',
                     title: '像素鸟',
                     category: '休闲',
                     rating: 4.6,
-                    image: 'images/games/flappybird.jpg'
+                    image: 'images/games/flappybird.jpg',
+                    isNew: true
                 },
                 {
                     id: 'breakout',
                     title: '打砖块',
                     category: '休闲',
                     rating: 4.4,
-                    image: 'images/games/breakout.jpg'
+                    image: 'images/games/breakout.jpg',
+                    isNew: true
                 }
             ];
             
