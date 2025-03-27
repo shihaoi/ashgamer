@@ -28,68 +28,68 @@ class GameLoader {
         // 游戏数据映射
         this.gamesData = {
             'snake': {
-                url: '/public/games/snake.html',
+                url: 'public/games/snake.html',
                 title: '贪吃蛇'
             },
             'spaceshooter': {
-                url: '/public/games/spaceshooter.html',
+                url: 'public/games/spaceshooter.html',
                 title: '太空射击'
             },
             'tetris': {
-                url: '/public/games/tetris.html',
+                url: 'public/games/tetris.html',
                 title: '俄罗斯方块',
                 description: '经典的俄罗斯方块游戏，使用方向键控制方块的移动和旋转。',
                 tags: ['益智', '休闲', '经典'],
-                thumbnail: '/public/images/games/tetris.jpg'
+                thumbnail: 'public/images/games/tetris.jpg'
             },
             'tower-defense': {
-                url: '/public/games/tower-defense.html',
+                url: 'public/games/tower-defense.html',
                 title: '塔防游戏',
                 description: '防御塔游戏，建造防御塔阻止敌人侵入您的基地。',
                 tags: ['策略', '防御', '塔防'],
-                thumbnail: '/public/images/games/tower-defense.jpg'
+                thumbnail: 'public/images/games/tower-defense.jpg'
             },
             'minesweeper': {
-                url: '/public/games/minesweeper.html',
+                url: 'public/games/minesweeper.html',
                 title: '扫雷',
                 description: '经典的扫雷游戏，点击格子揭示数字，避开所有地雷。',
                 tags: ['益智', '休闲', '经典'],
-                thumbnail: '/public/images/games/minesweeper.jpg'
+                thumbnail: 'public/images/games/minesweeper.jpg'
             },
             '2048': {
-                url: '/public/games/2048.html',
+                url: 'public/games/2048.html',
                 title: '2048',
                 description: '2048是一款数字合成游戏，通过合并相同数字来得到2048。',
                 tags: ['益智', '数字', '策略'],
-                thumbnail: '/public/images/games/2048.jpg'
+                thumbnail: 'public/images/games/2048.jpg'
             },
             'flappy-bird': {
-                url: '/public/games/flappy-bird.html',
+                url: 'public/games/flappy-bird.html',
                 title: '像素鸟',
                 description: '控制小鸟穿过障碍物，看看你能飞多远！',
                 tags: ['休闲', '技巧', '挑战'],
-                thumbnail: '/public/images/games/flappy-bird.jpg'
+                thumbnail: 'public/images/games/flappy-bird.jpg'
             },
             'breakout': {
-                url: '/public/games/breakout.html',
+                url: 'public/games/breakout.html',
                 title: '打砖块',
                 description: '使用挡板反弹球来打碎所有砖块的经典游戏。',
                 tags: ['休闲', '经典', '街机'],
-                thumbnail: '/public/images/games/breakout.jpg'
+                thumbnail: 'public/images/games/breakout.jpg'
             },
             'chess': {
-                url: '/public/games/chess.html',
+                url: 'public/games/chess.html',
                 title: '国际象棋',
                 description: '经典的双人国际象棋，与电脑或朋友对战。',
                 tags: ['策略', '棋盘', '双人'],
-                thumbnail: '/public/images/games/chess.jpg'
+                thumbnail: 'public/images/games/chess.jpg'
             },
             'xiangqi': {
-                url: '/public/games/xiangqi.html',
+                url: 'public/games/xiangqi.html',
                 title: '中国象棋',
                 description: '传统的中国象棋游戏，支持双人对战和人机对战。',
                 tags: ['策略', '棋盘', '双人'],
-                thumbnail: '/public/images/games/xiangqi.jpg'
+                thumbnail: 'public/images/games/xiangqi.jpg'
             }
         };
     }
