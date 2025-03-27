@@ -11,6 +11,7 @@ hellogame/
 │   ├── css/            # 样式文件
 │   ├── js/             # JavaScript文件
 │   ├── images/         # 图片资源
+│   │   └── games/     # 游戏缩略图
 │   └── games/          # 游戏文件
 │
 ├── src/                 # 源代码
@@ -33,6 +34,33 @@ hellogame/
 - 游戏搜索功能：快速找到想玩的游戏
 - 游戏推荐系统：基于用户喜好推荐游戏
 - 黑暗模式：提供更舒适的夜间游戏体验
+
+## 部署注意事项
+
+### 图片资源
+
+项目需要以下图片资源，请在部署前准备：
+
+1. Logo图片: `public/images/logo.png`
+2. 首页背景图: `public/images/hero-image.jpg` 
+3. 关于我们图片: `public/images/about-image.jpg`
+4. 游戏缩略图(位于 `public/images/games/` 目录):
+   - snake.jpg - 贪吃蛇游戏缩略图
+   - spaceshooter.jpg - 太空射击游戏缩略图
+   - tetris.jpg - 俄罗斯方块游戏缩略图
+   - 2048.jpg - 2048游戏缩略图
+   - flappybird.jpg - Flappy Bird游戏缩略图
+   - breakout.jpg - 打砖块游戏缩略图
+   - 其他游戏图片...
+
+可以使用任何符合游戏主题的图片替代，建议尺寸为16:9比例，推荐分辨率为480x270像素。
+
+### 路径引用
+
+当使用GitHub Pages、Vercel或其他静态网站托管服务部署时，确保所有资源引用使用相对路径而非绝对路径。例如:
+
+- 正确: `public/images/logo.png`
+- 错误: `/public/images/logo.png` (以斜杠开头)
 
 ## 本地运行
 
