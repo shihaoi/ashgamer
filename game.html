@@ -6,6 +6,8 @@
     <title>Space Waves - CrazyGames</title>
     <link rel="stylesheet" href="public/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- 添加SVG占位图脚本 -->
+    <script src="public/images/svg-placeholder.js"></script>
     <style>
         /* 游戏详情页特定样式 */
         .game-container {
@@ -348,7 +350,7 @@
     <header class="main-header">
         <div class="container">
             <div class="logo">
-                <a href="/">
+                <a href="index.html">
                     <img src="public/images/logo.png" alt="CrazyGames Logo">
                 </a>
             </div>
@@ -548,78 +550,114 @@
         </div>
     </footer>
 
-    <script src="public/js/main.js"></script>
+    <!-- 引入游戏加载器 -->
     <script src="public/js/game-loader.js"></script>
+    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取URL参数中的游戏ID
+        // 获取URL参数
+        function getUrlParam(name) {
             const urlParams = new URLSearchParams(window.location.search);
-            const gameId = urlParams.get('id') || 'spaceshooter'; // 默认太空射击游戏
+            return urlParams.get(name);
+        }
+        
+        // 初始化游戏加载器
+        function initGameLoader() {
+            const gameContainer = document.getElementById('game-container');
+            const gameId = getUrlParam('id') || 'spaceshooter'; // 默认加载太空射击游戏
             
             // 创建游戏加载器
-            const gameLoader = new GameLoader('game-container');
-            let isGameLoaded = false;
+            const gameLoader = new GameLoader(gameContainer);
             
-            // 播放按钮点击事件
-            document.getElementById('play-button').addEventListener('click', function() {
-                if (!isGameLoaded) {
+            // 设置游戏标题
+            const gameTitle = document.querySelector('.game-title');
+            const gameTitleText = gameLoader.gamesData[gameId]?.title || '太空射击';
+            if (gameTitle) {
+                gameTitle.textContent = gameTitleText;
+                document.title = gameTitleText + ' - CrazyGames';
+            }
+            
+            // 设置按钮事件
+            const playButton = document.getElementById('play-button');
+            const fullscreenButton = document.getElementById('fullscreen-button');
+            const favoriteButton = document.getElementById('favorite-button');
+            const shareButton = document.getElementById('share-button');
+            
+            // 播放按钮
+            if (playButton) {
+                playButton.addEventListener('click', function() {
                     gameLoader.loadGame(gameId);
-                    isGameLoaded = true;
-                    this.innerHTML = '<i class="fas fa-pause"></i> 暂停游戏';
-                } else {
-                    // 游戏已加载，切换暂停/继续
-                    if (this.innerHTML.includes('暂停')) {
-                        this.innerHTML = '<i class="fas fa-play"></i> 继续游戏';
-                        // 在实际应用中，这里会调用游戏的暂停API
-                    } else {
-                        this.innerHTML = '<i class="fas fa-pause"></i> 暂停游戏';
-                        // 在实际应用中，这里会调用游戏的继续API
-                    }
-                }
-            });
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-check"></i> 游戏已加载';
+                });
+            }
             
-            // 全屏按钮点击事件
-            document.getElementById('fullscreen-button').addEventListener('click', function() {
-                if (gameLoader && isGameLoaded) {
+            // 全屏按钮
+            if (fullscreenButton) {
+                fullscreenButton.addEventListener('click', function() {
                     gameLoader.toggleFullscreen();
-                } else {
-                    alert('请先开始游戏');
+                });
+            }
+            
+            // 收藏按钮
+            if (favoriteButton) {
+                favoriteButton.addEventListener('click', function() {
+                    const isFavorite = this.classList.toggle('active');
+                    this.innerHTML = isFavorite ? 
+                        '<i class="fas fa-heart"></i> 已收藏' : 
+                        '<i class="far fa-heart"></i> 收藏';
+                    
+                    // 保存到本地存储
+                    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+                    if (isFavorite && !favorites.includes(gameId)) {
+                        favorites.push(gameId);
+                    } else if (!isFavorite) {
+                        const index = favorites.indexOf(gameId);
+                        if (index !== -1) {
+                            favorites.splice(index, 1);
+                        }
+                    }
+                    localStorage.setItem('favorites', JSON.stringify(favorites));
+                });
+                
+                // 检查是否已收藏
+                const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+                if (favorites.includes(gameId)) {
+                    favoriteButton.classList.add('active');
+                    favoriteButton.innerHTML = '<i class="fas fa-heart"></i> 已收藏';
                 }
-            });
+            }
             
-            // 收藏按钮点击事件
-            document.getElementById('favorite-button').addEventListener('click', function() {
-                this.innerHTML = '<i class="fas fa-heart" style="color: red;"></i> 已收藏';
-                alert('游戏已添加到收藏！');
-            });
-            
-            // 分享按钮点击事件
-            document.getElementById('share-button').addEventListener('click', function() {
-                alert('分享功能将在此实现');
-            });
-            
-            // 加载推荐游戏
-            loadRecommendedGames();
-            
-            // 监听游戏加载事件
-            window.addEventListener('gameLoaded', function(event) {
-                console.log(`游戏已加载: ${event.detail.gameName}`);
-                // 更新页面标题
-                document.title = `${event.detail.gameName} - CrazyGames`;
-                // 更新游戏标题
-                document.querySelector('.game-title').textContent = event.detail.gameName;
-            });
-            
-            // 监听游戏停止事件
-            window.addEventListener('gameStopped', function(event) {
-                console.log(`游戏已停止: ${event.detail.gameName}, 游戏时长: ${event.detail.playTime}秒`);
-                isGameLoaded = false;
-                document.getElementById('play-button').innerHTML = '<i class="fas fa-play"></i> 玩游戏';
-            });
-        });
+            // 分享按钮
+            if (shareButton) {
+                shareButton.addEventListener('click', function() {
+                    // 尝试使用Web Share API
+                    if (navigator.share) {
+                        navigator.share({
+                            title: gameTitleText,
+                            text: '来看看这个有趣的游戏：' + gameTitleText,
+                            url: window.location.href
+                        })
+                        .catch(err => {
+                            console.error('分享失败：', err);
+                            // 降级处理
+                            alert('链接已复制到剪贴板！');
+                        });
+                    } else {
+                        // 降级处理，复制链接到剪贴板
+                        const dummy = document.createElement('input');
+                        document.body.appendChild(dummy);
+                        dummy.value = window.location.href;
+                        dummy.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(dummy);
+                        alert('链接已复制到剪贴板！');
+                    }
+                });
+            }
+        }
         
-        // 加载推荐游戏
-        function loadRecommendedGames() {
+        // 加载相关游戏
+        function loadRelatedGames() {
             const relatedGamesContainer = document.getElementById('related-games-container');
             
             // 清空容器
@@ -680,6 +718,12 @@
                 relatedGamesContainer.appendChild(gameCard);
             });
         }
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initGameLoader();
+            loadRelatedGames();
+        });
     </script>
 </body>
 </html> 

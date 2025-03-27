@@ -362,5 +362,11 @@ class GameLoader {
     }
 }
 
-// 导出GameLoader类
-export default GameLoader; 
+// 确保在非ES模块环境中也能正常工作
+try {
+    // 如果是ES模块环境
+    export default GameLoader;
+} catch (e) {
+    // 如果是非ES模块环境
+    // 什么都不做，GameLoader类在全局作用域中已可用
+} 
