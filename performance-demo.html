@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>性能优化演示 - HelloGame</title>
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .demo-section {
+            padding: 40px 20px;
+            background-color: #f8f9fa;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+        
+        .demo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .demo-header h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .demo-header p {
+            max-width: 800px;
+            margin: 0 auto;
+            color: #666;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .demo-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .demo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .demo-image {
+            width: 100%;
+            aspect-ratio: 4/3;
+            position: relative;
+        }
+        
+        .demo-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .demo-image .loading-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+        
+        .demo-card-content {
+            padding: 15px;
+        }
+        
+        .demo-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 10px 0;
+        }
+        
+        .demo-card-text {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+        
+        .stats-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 14px;
+            z-index: 9999;
+            max-width: 300px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stats-panel h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 5px;
+        }
+        
+        .stats-item {
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .stats-item span:first-child {
+            margin-right: 10px;
+        }
+        
+        .stats-item span:last-child {
+            font-weight: bold;
+        }
+        
+        .demo-controls {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .demo-btn {
+            background-color: #4a69bd;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.2s;
+        }
+        
+        .demo-btn:hover {
+            background-color: #1e3799;
+        }
+        
+        .demo-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .demo-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            font-weight: 500;
+        }
+        
+        .demo-tab.active {
+            border-color: #4a69bd;
+            color: #4a69bd;
+        }
+        
+        .comparison-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .comparison-side {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .side-header {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="/public/images/logo.png" alt="HelloGame" class="lazy">
+                <span>HelloGame</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">首页</a></li>
+                    <li><a href="category.html?category=热门">热门游戏</a></li>
+                    <li><a href="category.html?category=新游戏">新游戏</a></li>
+                    <li><a href="category.html?category=推荐">推荐</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索游戏...">
+                    <button type="button"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="language-selector">
+                    <button type="button" class="lang-btn">
+                        <i class="fas fa-globe"></i>
+                        <span>中文</span>
+                    </button>
+                    <div class="language-dropdown">
+                        <a href="#" data-lang="zh">中文</a>
+                        <a href="#" data-lang="en">English</a>
+                    </div>
+                </div>
+                <button type="button" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>性能优化演示</h1>
+                <p>探索HelloGame平台的性能优化技术，了解我们如何提供流畅的游戏体验。</p>
+            </div>
+        </section>
+        
+        <div class="container">
+            <div class="demo-tabs">
+                <div class="demo-tab active" data-tab="lazy-loading">懒加载</div>
+                <div class="demo-tab" data-tab="preloading">预加载</div>
+                <div class="demo-tab" data-tab="comparison">优化对比</div>
+            </div>
+            
+            <div class="tab-content" id="lazy-loading-tab">
+                <section class="demo-section">
+                    <div class="demo-header">
+                        <h2>图片懒加载演示</h2>
+                        <p>向下滚动页面，观察图片如何在进入视口时才开始加载。这种技术可以显著减少初始页面加载时间和带宽使用。</p>
+                    </div>
+                    
+                    <div class="demo-controls">
+                        <button class="demo-btn" id="add-images-btn">添加更多图片</button>
+                        <button class="demo-btn" id="toggle-lazy-btn">切换懒加载</button>
+                    </div>
+                    
+                    <div class="demo-grid" id="lazy-loading-grid">
+                        <!-- 图片卡片将在这里动态添加 -->
+                    </div>
+                </section>
+            </div>
+            
+            <div class="tab-content" id="preloading-tab" style="display: none;">
+                <section class="demo-section">
+                    <div class="demo-header">
+                        <h2>资源预加载演示</h2>
+                        <p>将鼠标悬停在游戏卡片上，系统会自动预加载游戏资源，使点击后的游戏加载速度更快。</p>
+                    </div>
+                    
+                    <div class="demo-controls">
+                        <button class="demo-btn" id="clear-cache-btn">清除缓存</button>
+                        <button class="demo-btn" id="preload-all-btn">预加载全部</button>
+                    </div>
+                    
+                    <div class="demo-grid" id="preloading-grid">
+                        <!-- 游戏卡片将在这里动态添加 -->
+                    </div>
+                </section>
+            </div>
+            
+            <div class="tab-content" id="comparison-tab" style="display: none;">
+                <section class="demo-section">
+                    <div class="demo-header">
+                        <h2>性能优化对比</h2>
+                        <p>比较优化前后的性能差异，包括页面加载时间、资源使用和渲染性能。</p>
+                    </div>
+                    
+                    <div class="comparison-container">
+                        <div class="comparison-side">
+                            <div class="side-header">优化前</div>
+                            <div id="before-stats">
+                                <div class="stats-item">
+                                    <span>页面加载时间:</span>
+                                    <span>2500ms</span>
+                                </div>
+                                <div class="stats-item">
+                                    <span>初始资源大小:</span>
+                                    <span>5.4MB</span>
+                                </div>
+                                <div class="stats-item">
+                                    <span>HTTP请求数:</span>
+                                    <span>42</span>
+                                </div>
+                                <div class="stats-item">
+                                    <span>首次内容绘制:</span>
+                                    <span>1200ms</span>
+                                </div>
+                                <div class="stats-item">
+                                    <span>可交互时间:</span>
+                                    <span>3100ms</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="comparison-side">
+                            <div class="side-header">优化后</div>
+                            <div id="after-stats">
+                                <div class="stats-item">
+                                    <span>页面加载时间:</span>
+                                    <span>850ms</span>
+                                </div>
+                                <div class="stats-item">
+                                    <span>初始资源大小:</span>
+                                    <span>1.2MB</span>
+                                </div>
+                                <div class="stats-item">
+                                    <span>HTTP请求数:</span>
+                                    <span>12</span>
+                                </div>
+                                <div class="stats-item">
+                                    <span>首次内容绘制:</span>
+                                    <span>320ms</span>
+                                </div>
+                                <div class="stats-item">
+                                    <span>可交互时间:</span>
+                                    <span>980ms</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="demo-header" style="margin-top: 40px;">
+                        <h2>实现的性能优化技术</h2>
+                    </div>
+                    
+                    <div class="comparison-container">
+                        <div class="comparison-side">
+                            <div class="side-header">内容优化</div>
+                            <ul>
+                                <li>图片懒加载</li>
+                                <li>图片格式优化（WebP）</li>
+                                <li>关键CSS内联</li>
+                                <li>非关键资源延迟加载</li>
+                                <li>资源压缩</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="comparison-side">
+                            <div class="side-header">交付优化</div>
+                            <ul>
+                                <li>资源预加载</li>
+                                <li>资源优先级管理</li>
+                                <li>资源缓存策略</li>
+                                <li>预连接关键域名</li>
+                                <li>HTTP/2 支持</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        
+        <!-- 性能统计面板 -->
+        <div class="stats-panel" id="stats-panel">
+            <h3>性能统计</h3>
+            <div id="stats-content">
+                <div class="stats-item">
+                    <span>页面加载时间:</span>
+                    <span>0ms</span>
+                </div>
+                <div class="stats-item">
+                    <span>首次内容绘制:</span>
+                    <span>0ms</span>
+                </div>
+                <div class="stats-item">
+                    <span>图片平均加载:</span>
+                    <span>0ms</span>
+                </div>
+                <div class="stats-item">
+                    <span>资源数量:</span>
+                    <span>0</span>
+                </div>
+                <div class="stats-item">
+                    <span>资源总大小:</span>
+                    <span>0MB</span>
+                </div>
+                <div class="stats-item">
+                    <span>缓存命中率:</span>
+                    <span>0%</span>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>关于我们</h3>
+                <ul>
+                    <li><a href="#">关于 HelloGame</a></li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">加入我们</a></li>
+                    <li><a href="#">博客</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>支持</h3>
+                <ul>
+                    <li><a href="#">常见问题</a></li>
+                    <li><a href="#">开发者支持</a></li>
+                    <li><a href="#">问题反馈</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>开发者</h3>
+                <ul>
+                    <li><a href="#">提交游戏</a></li>
+                    <li><a href="#">开发者工具</a></li>
+                    <li><a href="#">API文档</a></li>
+                    <li><a href="#">成功案例</a></li>
+                </ul>
+            </div>
+            <div class="footer-column social">
+                <h3>关注我们</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                </div>
+                <p>订阅我们的邮件，获取最新游戏资讯</p>
+                <div class="subscribe-form">
+                    <input type="email" placeholder="您的邮箱地址">
+                    <button type="button">订阅</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 HelloGame. 保留所有权利。</p>
+            <ul class="footer-links">
+                <li><a href="#">服务条款</a></li>
+                <li><a href="#">隐私政策</a></li>
+                <li><a href="#">Cookie政策</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script type="module" src="/src/performance-demo.js"></script>
+    <script type="module">
+        import { PerformanceStats, LazyLoadDemo, PreloadDemo } from '/src/performance-demo.js';
+        import ImageOptimizer from '/src/utils/ImageOptimizer.js';
+        import ResourceLoader from '/src/utils/ResourceLoader.js';
+        import { getAllGames } from '/src/api/gamesApi.js';
+        
+        // 创建性能统计实例
+        const performanceStats = new PerformanceStats();
+        performanceStats.init();
+        
+        // 创建资源加载器实例
+        const resourceLoader = new ResourceLoader({
+            concurrency: 5,
+            cacheEnabled: true
+        });
+        
+        // 创建图片优化器实例
+        const imageOptimizer = new ImageOptimizer({
+            lazyLoadEnabled: true,
+            lazyLoadThreshold: 300,
+            webpEnabled: true
+        });
+        
+        // 懒加载演示
+        const lazyLoadDemo = new LazyLoadDemo(imageOptimizer);
+        
+        // 预加载演示
+        const preloadDemo = new PreloadDemo(resourceLoader);
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化性能统计面板
+            updateStatsPanel();
+            
+            // 初始化标签页切换
+            initTabs();
+            
+            // 初始化懒加载演示
+            initLazyLoadingDemo();
+            
+            // 初始化预加载演示
+            initPreloadingDemo();
+        });
+        
+        // 更新性能统计面板
+        function updateStatsPanel() {
+            setInterval(() => {
+                const metrics = performanceStats.getMetrics();
+                
+                document.getElementById('stats-content').innerHTML = `
+                    <div class="stats-item">
+                        <span>页面加载时间:</span>
+                        <span>${metrics.pageLoadTime.toFixed(0)}ms</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>首次内容绘制:</span>
+                        <span>${metrics.firstContentfulPaint.toFixed(0)}ms</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>图片平均加载:</span>
+                        <span>${metrics.imageLoadTime.toFixed(0)}ms</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>资源数量:</span>
+                        <span>${metrics.resourceCount}</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>资源总大小:</span>
+                        <span>${(metrics.resourceSize / 1024 / 1024).toFixed(2)}MB</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>缓存命中率:</span>
+                        <span>${metrics.cacheHits ? ((metrics.cacheHits / metrics.resourceCount) * 100).toFixed(1) : 0}%</span>
+                    </div>
+                `;
+            }, 1000);
+        }
+        
+        // 初始化标签页切换
+        function initTabs() {
+            const tabs = document.querySelectorAll('.demo-tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // 移除所有标签的活动状态
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // 添加当前标签的活动状态
+                    tab.classList.add('active');
+                    
+                    // 隐藏所有内容
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.style.display = 'none';
+                    });
+                    
+                    // 显示当前内容
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(`${tabId}-tab`).style.display = 'block';
+                });
+            });
+        }
+        
+        // 初始化懒加载演示
+        function initLazyLoadingDemo() {
+            const grid = document.getElementById('lazy-loading-grid');
+            
+            // 添加初始图片
+            addLazyImages(grid, 8);
+            
+            // 添加图片按钮事件
+            document.getElementById('add-images-btn').addEventListener('click', () => {
+                addLazyImages(grid, 4);
+                
+                // 刷新懒加载
+                imageOptimizer.refresh();
+            });
+            
+            // 切换懒加载按钮事件
+            document.getElementById('toggle-lazy-btn').addEventListener('click', function() {
+                if (imageOptimizer.options.lazyLoadEnabled) {
+                    imageOptimizer.options.lazyLoadEnabled = false;
+                    this.textContent = '启用懒加载';
+                    
+                    // 立即加载所有图片
+                    imageOptimizer.loadAllImages();
+                } else {
+                    imageOptimizer.options.lazyLoadEnabled = true;
+                    this.textContent = '禁用懒加载';
+                    
+                    // 重新设置懒加载
+                    imageOptimizer.init();
+                }
+            });
+            
+            // 初始化懒加载
+            imageOptimizer.init();
+        }
+        
+        // 添加懒加载图片
+        function addLazyImages(container, count) {
+            for (let i = 0; i < count; i++) {
+                const index = container.children.length + 1;
+                
+                const card = document.createElement('div');
+                card.className = 'demo-card';
+                
+                // 图片URL
+                const imageUrl = `https://picsum.photos/id/${index + 100}/400/300`;
+                
+                card.innerHTML = `
+                    <div class="demo-image">
+                        <div class="loading-indicator">加载中...</div>
+                        <img data-src="${imageUrl}" alt="演示图片 ${index}" class="lazy">
+                    </div>
+                    <div class="demo-card-content">
+                        <h3 class="demo-card-title">懒加载图片 #${index}</h3>
+                        <p class="demo-card-text">滚动到视图中才会加载</p>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            }
+        }
+        
+        // 初始化预加载演示
+        async function initPreloadingDemo() {
+            try {
+                // 获取游戏数据
+                const games = await getAllGames({ limit: 8 });
+                
+                // 获取grid容器
+                const grid = document.getElementById('preloading-grid');
+                
+                // 添加游戏卡片
+                games.forEach(game => {
+                    const card = document.createElement('div');
+                    card.className = 'demo-card';
+                    
+                    card.innerHTML = `
+                        <div class="demo-image">
+                            <img src="${game.thumbnail}" alt="${game.title}">
+                        </div>
+                        <div class="demo-card-content">
+                            <h3 class="demo-card-title">${game.title}</h3>
+                            <p class="demo-card-text">${game.categories ? game.categories.join(', ') : '休闲'}</p>
+                        </div>
+                    `;
+                    
+                    // 添加鼠标悬停预加载
+                    card.addEventListener('mouseenter', () => {
+                        // 预加载游戏资源
+                        resourceLoader.load(game.url, {
+                            priority: 0,
+                            type: 'generic'
+                        });
+                        
+                        // 显示预加载状态
+                        card.style.borderColor = '#4a69bd';
+                        card.querySelector('.demo-card-text').textContent = '正在预加载游戏资源...';
+                    });
+                    
+                    // 添加点击事件
+                    card.addEventListener('click', () => {
+                        window.location.href = `game.html?id=${game.id}`;
+                    });
+                    
+                    grid.appendChild(card);
+                });
+                
+                // 清除缓存按钮事件
+                document.getElementById('clear-cache-btn').addEventListener('click', () => {
+                    resourceLoader.clearCache();
+                    alert('资源缓存已清除');
+                });
+                
+                // 预加载全部按钮事件
+                document.getElementById('preload-all-btn').addEventListener('click', () => {
+                    games.forEach(game => {
+                        resourceLoader.load(game.url, {
+                            priority: 1,
+                            type: 'generic'
+                        });
+                    });
+                    alert('已开始预加载所有游戏资源');
+                });
+                
+            } catch (error) {
+                console.error('加载游戏数据失败:', error);
+                document.getElementById('preloading-grid').innerHTML = '<p>加载游戏数据失败，请稍后再试</p>';
+            }
+        }
+    </script>
+</body>
+</html> 

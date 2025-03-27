@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 - HelloGame</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background-color: #faf8ef;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #776e65;
+        }
+        
+        .game-container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .title {
+            font-size: 80px;
+            font-weight: bold;
+            color: #776e65;
+        }
+        
+        .scores-container {
+            display: flex;
+        }
+        
+        .score-container, .best-container {
+            background-color: #bbada0;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 3px;
+            margin-left: 10px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .score-title, .best-title {
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+        
+        .score, .best {
+            font-size: 25px;
+            font-weight: bold;
+        }
+        
+        .game-intro {
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        
+        .restart-button {
+            background-color: #8f7a66;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .restart-button:hover {
+            background-color: #9f8b77;
+        }
+        
+        .game-board {
+            background-color: #bbada0;
+            border-radius: 6px;
+            padding: 15px;
+            position: relative;
+            width: 100%;
+            height: 450px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 15px;
+        }
+        
+        .grid-cell {
+            width: 100%;
+            height: 100%;
+            background-color: #cdc1b4;
+            border-radius: 3px;
+        }
+        
+        .tile {
+            width: 100%;
+            height: 100%;
+            border-radius: 3px;
+            font-size: 35px;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        
+        .tile-new {
+            animation: appear 0.2s;
+        }
+        
+        .tile-merged {
+            animation: pop 0.2s;
+        }
+        
+        .tile-2 {
+            background-color: #eee4da;
+        }
+        
+        .tile-4 {
+            background-color: #ede0c8;
+        }
+        
+        .tile-8 {
+            background-color: #f2b179;
+            color: white;
+        }
+        
+        .tile-16 {
+            background-color: #f59563;
+            color: white;
+        }
+        
+        .tile-32 {
+            background-color: #f67c5f;
+            color: white;
+        }
+        
+        .tile-64 {
+            background-color: #f65e3b;
+            color: white;
+        }
+        
+        .tile-128 {
+            background-color: #edcf72;
+            color: white;
+            font-size: 30px;
+        }
+        
+        .tile-256 {
+            background-color: #edcc61;
+            color: white;
+            font-size: 30px;
+        }
+        
+        .tile-512 {
+            background-color: #edc850;
+            color: white;
+            font-size: 30px;
+        }
+        
+        .tile-1024 {
+            background-color: #edc53f;
+            color: white;
+            font-size: 25px;
+        }
+        
+        .tile-2048 {
+            background-color: #edc22e;
+            color: white;
+            font-size: 25px;
+        }
+        
+        .tile-super {
+            background-color: #3c3a32;
+            color: white;
+            font-size: 20px;
+        }
+        
+        .game-message {
+            display: none;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: rgba(238, 228, 218, 0.73);
+            z-index: 100;
+            text-align: center;
+            animation: fade-in 0.8s;
+            border-radius: 6px;
+        }
+        
+        .game-message.game-won, .game-message.game-over {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .game-message p {
+            font-size: 60px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .game-message .lower {
+            margin-top: 30px;
+        }
+        
+        .game-message .retry-button {
+            margin-right: 15px;
+        }
+        
+        @keyframes appear {
+            0% {
+                opacity: 0;
+                transform: scale(0);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes pop {
+            0% {
+                transform: scale(0.8);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes fade-in {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #776e65;
+            max-width: 500px;
+        }
+        
+        @media (max-width: 520px) {
+            .game-container {
+                padding: 10px;
+            }
+            
+            .header {
+                margin-bottom: 10px;
+            }
+            
+            .title {
+                font-size: 50px;
+            }
+            
+            .game-board {
+                height: 320px;
+                padding: 10px;
+                gap: 10px;
+            }
+            
+            .tile {
+                font-size: 25px;
+            }
+            
+            .tile-128, .tile-256, .tile-512 {
+                font-size: 20px;
+            }
+            
+            .tile-1024, .tile-2048 {
+                font-size: 18px;
+            }
+            
+            .game-message p {
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1 class="title">2048</h1>
+            <div class="scores-container">
+                <div class="score-container">
+                    <div class="score-title">得分</div>
+                    <div class="score">0</div>
+                </div>
+                <div class="best-container">
+                    <div class="best-title">最高分</div>
+                    <div class="best">0</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="game-intro">
+            <p>通过合并相同数字的方块来获得 <strong>2048</strong>!</p>
+            <button class="restart-button">新游戏</button>
+        </div>
+        
+        <div class="game-board">
+            <!-- 4x4 格子将由 JavaScript 动态创建 -->
+            
+            <div class="game-message">
+                <p></p>
+                <div class="lower">
+                    <button class="retry-button restart-button">再来一次</button>
+                    <div class="keep-playing-button restart-button">继续</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <p><strong>如何玩:</strong> 使用 <strong>方向键</strong> 或 <strong>滑动屏幕</strong> 移动方块。当两个相同数字的方块碰撞时，它们会合并成一个新的方块!</p>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 游戏配置
+            const config = {
+                size: 4,
+                startTiles: 2,
+                winScore: 2048
+            };
+            
+            // 游戏变量
+            let grid = [];
+            let score = 0;
+            let bestScore = localStorage.getItem('bestScore') || 0;
+            let gameOver = false;
+            let won = false;
+            let keepPlaying = false;
+            
+            // DOM 元素
+            const gameBoard = document.querySelector('.game-board');
+            const scoreElement = document.querySelector('.score');
+            const bestElement = document.querySelector('.best');
+            const restartButtons = document.querySelectorAll('.restart-button');
+            const gameMessage = document.querySelector('.game-message');
+            const keepPlayingButton = document.querySelector('.keep-playing-button');
+            
+            // 初始化游戏
+            function init() {
+                // 清空游戏板
+                gameBoard.innerHTML = '';
+                
+                // 创建游戏消息元素
+                gameBoard.appendChild(gameMessage);
+                
+                // 创建格子
+                for (let i = 0; i < config.size * config.size; i++) {
+                    const gridCell = document.createElement('div');
+                    gridCell.className = 'grid-cell';
+                    gameBoard.appendChild(gridCell);
+                }
+                
+                // 初始化游戏数据
+                grid = Array.from({ length: config.size }, () => Array(config.size).fill(null));
+                score = 0;
+                gameOver = false;
+                won = false;
+                keepPlaying = false;
+                
+                // 更新分数显示
+                updateScore();
+                
+                // 重置游戏消息
+                gameMessage.classList.remove('game-won', 'game-over');
+                gameMessage.style.display = 'none';
+                
+                // 添加初始方块
+                addStartTiles();
+            }
+            
+            // 添加初始方块
+            function addStartTiles() {
+                for (let i = 0; i < config.startTiles; i++) {
+                    addRandomTile();
+                }
+            }
+            
+            // 添加随机方块
+            function addRandomTile() {
+                // 只有在有空格的情况下才添加
+                if (availableCells().length > 0) {
+                    const value = Math.random() < 0.9 ? 2 : 4;
+                    const position = randomAvailableCell();
+                    
+                    const tile = {
+                        x: position.x,
+                        y: position.y,
+                        value: value,
+                        merged: false
+                    };
+                    
+                    grid[position.y][position.x] = tile;
+                    
+                    // 创建方块元素
+                    addTileElement(tile);
+                }
+            }
+            
+            // 添加方块元素
+            function addTileElement(tile) {
+                const element = document.createElement('div');
+                element.className = `tile tile-${tile.value} tile-new`;
+                element.textContent = tile.value;
+                
+                const x = tile.x;
+                const y = tile.y;
+                
+                element.style.gridColumn = `${x + 1}`;
+                element.style.gridRow = `${y + 1}`;
+                
+                gameBoard.appendChild(element);
+            }
+            
+            // 获取可用格子
+            function availableCells() {
+                const cells = [];
+                
+                for (let y = 0; y < config.size; y++) {
+                    for (let x = 0; x < config.size; x++) {
+                        if (!grid[y][x]) {
+                            cells.push({ x, y });
+                        }
+                    }
+                }
+                
+                return cells;
+            }
+            
+            // 随机选择一个可用格子
+            function randomAvailableCell() {
+                const cells = availableCells();
+                
+                if (cells.length) {
+                    return cells[Math.floor(Math.random() * cells.length)];
+                }
+                
+                return null;
+            }
+            
+            // 更新分数
+            function updateScore() {
+                scoreElement.textContent = score;
+                
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestElement.textContent = bestScore;
+                    localStorage.setItem('bestScore', bestScore);
+                }
+            }
+            
+            // 移动方块
+            function move(direction) {
+                if (gameOver && !keepPlaying) return;
+                
+                // 保存当前状态以检查是否有变化
+                const oldGrid = JSON.stringify(grid);
+                
+                // 基于方向确定遍历方向
+                let moved = false;
+                
+                // 准备新的网格
+                const newGrid = Array.from({ length: config.size }, () => Array(config.size).fill(null));
+                
+                // 重置所有方块的合并状态
+                for (let y = 0; y < config.size; y++) {
+                    for (let x = 0; x < config.size; x++) {
+                        if (grid[y][x]) {
+                            grid[y][x].merged = false;
+                        }
+                    }
+                }
+                
+                // 处理不同方向的移动逻辑
+                switch (direction) {
+                    case 'up':
+                        for (let x = 0; x < config.size; x++) {
+                            let newY = 0;
+                            for (let y = 0; y < config.size; y++) {
+                                const tile = grid[y][x];
+                                if (tile) {
+                                    let target = null;
+                                    
+                                    // 查找合并目标
+                                    for (let i = newY - 1; i >= 0; i--) {
+                                        if (newGrid[i][x] && newGrid[i][x].value === tile.value && !newGrid[i][x].merged) {
+                                            target = { x, y: i };
+                                            break;
+                                        } else if (newGrid[i][x]) {
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (target) {
+                                        // 合并方块
+                                        newGrid[target.y][target.x].value *= 2;
+                                        newGrid[target.y][target.x].merged = true;
+                                        
+                                        // 增加分数
+                                        score += newGrid[target.y][target.x].value;
+                                        
+                                        // 检查是否获胜
+                                        if (newGrid[target.y][target.x].value === config.winScore && !won) {
+                                            won = true;
+                                            gameWon();
+                                        }
+                                        
+                                        moved = true;
+                                    } else {
+                                        // 移动方块
+                                        newGrid[newY][x] = {
+                                            x: x,
+                                            y: newY,
+                                            value: tile.value,
+                                            merged: false
+                                        };
+                                        
+                                        if (y !== newY || x !== tile.x) {
+                                            moved = true;
+                                        }
+                                        
+                                        newY++;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    
+                    case 'right':
+                        for (let y = 0; y < config.size; y++) {
+                            let newX = config.size - 1;
+                            for (let x = config.size - 1; x >= 0; x--) {
+                                const tile = grid[y][x];
+                                if (tile) {
+                                    let target = null;
+                                    
+                                    // 查找合并目标
+                                    for (let i = newX + 1; i < config.size; i++) {
+                                        if (newGrid[y][i] && newGrid[y][i].value === tile.value && !newGrid[y][i].merged) {
+                                            target = { x: i, y };
+                                            break;
+                                        } else if (newGrid[y][i]) {
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (target) {
+                                        // 合并方块
+                                        newGrid[target.y][target.x].value *= 2;
+                                        newGrid[target.y][target.x].merged = true;
+                                        
+                                        // 增加分数
+                                        score += newGrid[target.y][target.x].value;
+                                        
+                                        // 检查是否获胜
+                                        if (newGrid[target.y][target.x].value === config.winScore && !won) {
+                                            won = true;
+                                            gameWon();
+                                        }
+                                        
+                                        moved = true;
+                                    } else {
+                                        // 移动方块
+                                        newGrid[y][newX] = {
+                                            x: newX,
+                                            y: y,
+                                            value: tile.value,
+                                            merged: false
+                                        };
+                                        
+                                        if (y !== tile.y || newX !== x) {
+                                            moved = true;
+                                        }
+                                        
+                                        newX--;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    
+                    case 'down':
+                        for (let x = 0; x < config.size; x++) {
+                            let newY = config.size - 1;
+                            for (let y = config.size - 1; y >= 0; y--) {
+                                const tile = grid[y][x];
+                                if (tile) {
+                                    let target = null;
+                                    
+                                    // 查找合并目标
+                                    for (let i = newY + 1; i < config.size; i++) {
+                                        if (newGrid[i][x] && newGrid[i][x].value === tile.value && !newGrid[i][x].merged) {
+                                            target = { x, y: i };
+                                            break;
+                                        } else if (newGrid[i][x]) {
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (target) {
+                                        // 合并方块
+                                        newGrid[target.y][target.x].value *= 2;
+                                        newGrid[target.y][target.x].merged = true;
+                                        
+                                        // 增加分数
+                                        score += newGrid[target.y][target.x].value;
+                                        
+                                        // 检查是否获胜
+                                        if (newGrid[target.y][target.x].value === config.winScore && !won) {
+                                            won = true;
+                                            gameWon();
+                                        }
+                                        
+                                        moved = true;
+                                    } else {
+                                        // 移动方块
+                                        newGrid[newY][x] = {
+                                            x: x,
+                                            y: newY,
+                                            value: tile.value,
+                                            merged: false
+                                        };
+                                        
+                                        if (y !== newY || x !== tile.x) {
+                                            moved = true;
+                                        }
+                                        
+                                        newY--;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                    
+                    case 'left':
+                        for (let y = 0; y < config.size; y++) {
+                            let newX = 0;
+                            for (let x = 0; x < config.size; x++) {
+                                const tile = grid[y][x];
+                                if (tile) {
+                                    let target = null;
+                                    
+                                    // 查找合并目标
+                                    for (let i = newX - 1; i >= 0; i--) {
+                                        if (newGrid[y][i] && newGrid[y][i].value === tile.value && !newGrid[y][i].merged) {
+                                            target = { x: i, y };
+                                            break;
+                                        } else if (newGrid[y][i]) {
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (target) {
+                                        // 合并方块
+                                        newGrid[target.y][target.x].value *= 2;
+                                        newGrid[target.y][target.x].merged = true;
+                                        
+                                        // 增加分数
+                                        score += newGrid[target.y][target.x].value;
+                                        
+                                        // 检查是否获胜
+                                        if (newGrid[target.y][target.x].value === config.winScore && !won) {
+                                            won = true;
+                                            gameWon();
+                                        }
+                                        
+                                        moved = true;
+                                    } else {
+                                        // 移动方块
+                                        newGrid[y][newX] = {
+                                            x: newX,
+                                            y: y,
+                                            value: tile.value,
+                                            merged: false
+                                        };
+                                        
+                                        if (y !== tile.y || newX !== x) {
+                                            moved = true;
+                                        }
+                                        
+                                        newX++;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+                }
+                
+                // 更新网格
+                grid = newGrid;
+                
+                // 如果有移动，则渲染新状态并添加新方块
+                if (moved) {
+                    updateScore();
+                    renderGrid();
+                    addRandomTile();
+                    
+                    // 检查游戏是否结束
+                    if (!movesAvailable()) {
+                        gameOver = true;
+                        gameOverMessage();
+                    }
+                }
+            }
+            
+            // 渲染网格
+            function renderGrid() {
+                // 移除所有方块元素
+                const tiles = document.querySelectorAll('.tile');
+                tiles.forEach(tile => tile.remove());
+                
+                // 创建新方块元素
+                for (let y = 0; y < config.size; y++) {
+                    for (let x = 0; x < config.size; x++) {
+                        const tile = grid[y][x];
+                        if (tile) {
+                            const element = document.createElement('div');
+                            element.className = `tile tile-${tile.value}`;
+                            if (tile.merged) {
+                                element.classList.add('tile-merged');
+                            }
+                            element.textContent = tile.value;
+                            
+                            element.style.gridColumn = `${x + 1}`;
+                            element.style.gridRow = `${y + 1}`;
+                            
+                            gameBoard.appendChild(element);
+                        }
+                    }
+                }
+            }
+            
+            // 检查是否有可用的移动
+            function movesAvailable() {
+                // 检查是否有空格
+                if (availableCells().length > 0) {
+                    return true;
+                }
+                
+                // 检查是否有可合并的方块
+                for (let y = 0; y < config.size; y++) {
+                    for (let x = 0; x < config.size; x++) {
+                        const tile = grid[y][x];
+                        
+                        // 检查右边的方块
+                        if (x < config.size - 1 && grid[y][x + 1] && grid[y][x + 1].value === tile.value) {
+                            return true;
+                        }
+                        
+                        // 检查下边的方块
+                        if (y < config.size - 1 && grid[y + 1][x] && grid[y + 1][x].value === tile.value) {
+                            return true;
+                        }
+                    }
+                }
+                
+                return false;
+            }
+            
+            // 游戏胜利信息
+            function gameWon() {
+                if (!keepPlaying) {
+                    gameMessage.querySelector('p').textContent = '恭喜，你赢了!';
+                    gameMessage.classList.add('game-won');
+                    gameMessage.style.display = 'flex';
+                }
+            }
+            
+            // 游戏结束信息
+            function gameOverMessage() {
+                gameMessage.querySelector('p').textContent = '游戏结束!';
+                gameMessage.classList.add('game-over');
+                gameMessage.style.display = 'flex';
+            }
+            
+            // 键盘事件处理
+            function handleKeydown(event) {
+                if (['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft', 'w', 'a', 's', 'd'].includes(event.key)) {
+                    event.preventDefault();
+                    
+                    // 根据按键移动
+                    switch (event.key) {
+                        case 'ArrowUp':
+                        case 'w':
+                            move('up');
+                            break;
+                        case 'ArrowRight':
+                        case 'd':
+                            move('right');
+                            break;
+                        case 'ArrowDown':
+                        case 's':
+                            move('down');
+                            break;
+                        case 'ArrowLeft':
+                        case 'a':
+                            move('left');
+                            break;
+                    }
+                }
+            }
+            
+            // 触摸事件处理
+            let touchStartX = 0;
+            let touchStartY = 0;
+            
+            function handleTouchStart(event) {
+                touchStartX = event.touches[0].clientX;
+                touchStartY = event.touches[0].clientY;
+            }
+            
+            function handleTouchEnd(event) {
+                if (!touchStartX || !touchStartY) return;
+                
+                const touchEndX = event.changedTouches[0].clientX;
+                const touchEndY = event.changedTouches[0].clientY;
+                
+                const dx = touchEndX - touchStartX;
+                const dy = touchEndY - touchStartY;
+                
+                // 判断滑动方向
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    // 水平滑动
+                    if (dx > 10) {
+                        move('right');
+                    } else if (dx < -10) {
+                        move('left');
+                    }
+                } else {
+                    // 垂直滑动
+                    if (dy > 10) {
+                        move('down');
+                    } else if (dy < -10) {
+                        move('up');
+                    }
+                }
+                
+                touchStartX = 0;
+                touchStartY = 0;
+            }
+            
+            // 添加事件监听器
+            document.addEventListener('keydown', handleKeydown);
+            gameBoard.addEventListener('touchstart', handleTouchStart);
+            gameBoard.addEventListener('touchend', handleTouchEnd);
+            
+            // 重新开始游戏
+            restartButtons.forEach(button => {
+                button.addEventListener('click', init);
+            });
+            
+            // 继续游戏
+            keepPlayingButton.addEventListener('click', () => {
+                keepPlaying = true;
+                gameMessage.style.display = 'none';
+            });
+            
+            // 初始化游戏
+            init();
+        });
+    </script>
+</body>
+</html> 

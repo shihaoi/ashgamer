@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Waves - CrazyGames</title>
+    <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 游戏详情页特定样式 */
+        .game-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+        
+        .game-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .back-button {
+            margin-right: 15px;
+            font-size: 14px;
+            color: var(--light-text);
+            display: flex;
+            align-items: center;
+        }
+        
+        .back-button i {
+            margin-right: 5px;
+        }
+        
+        .game-title {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        .game-frame-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9比例 */
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .game-frame {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .game-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 16px;
+        }
+        
+        .game-error {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+        
+        .error-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+        
+        .error-message {
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .error-retry {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .error-retry:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .game-info-grid {
+            display: grid;
+            grid-template-columns: 7fr 3fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .game-description {
+            background-color: var(--card-color);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-description h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+        
+        .game-description p {
+            color: var(--light-text);
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .game-description .controls {
+            margin-top: 25px;
+        }
+        
+        .game-description .controls h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .game-description .controls ul {
+            padding-left: 20px;
+        }
+        
+        .game-description .controls li {
+            margin-bottom: 8px;
+            color: var(--light-text);
+        }
+        
+        .key {
+            display: inline-block;
+            background-color: var(--hover-color);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        .game-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .game-actions, .game-details, .game-author {
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .play-button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .play-button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .play-button i {
+            margin-right: 8px;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            background-color: var(--hover-color);
+            border: none;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 12px;
+            color: var(--text-color);
+        }
+        
+        .action-btn:hover {
+            background-color: var(--border-color);
+        }
+        
+        .action-btn i {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .action-btn + .action-btn {
+            margin-left: 10px;
+        }
+        
+        .game-details h3, .game-author h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            color: var(--light-text);
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .game-author {
+            text-align: center;
+        }
+        
+        .author-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            overflow: hidden;
+        }
+        
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .author-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .author-info {
+            color: var(--light-text);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        
+        .author-link {
+            color: var(--primary-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .related-games {
+            margin-bottom: 40px;
+        }
+        
+        .related-games h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .related-games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .game-info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-title {
+                font-size: 24px;
+            }
+            
+            .related-games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="public/images/logo.png" alt="CrazyGames Logo">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                    <li><a href="#"><i class="fas fa-history"></i> 最近玩过</a></li>
+                    <li><a href="#"><i class="fas fa-star"></i> 新游戏</a></li>
+                    <li><a href="#"><i class="fas fa-fire"></i> 热门游戏</a></li>
+                    <li><a href="#"><i class="fas fa-sync"></i> 更新游戏</a></li>
+                    <li><a href="#"><i class="fas fa-gamepad"></i> 原创游戏</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> 多人游戏</a></li>
+                </ul>
+            </nav>
+            <div class="language-selector">
+                <select id="language">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- 游戏分类导航 -->
+    <div class="categories-nav">
+        <div class="container">
+            <ul>
+                <li><a href="category.html?category=two-player"><i class="fas fa-users"></i> 双人游戏</a></li>
+                <li><a href="category.html?category=action" class="active"><i class="fas fa-running"></i> 动作游戏</a></li>
+                <li><a href="category.html?category=adventure"><i class="fas fa-mountain"></i> 冒险游戏</a></li>
+                <li><a href="category.html?category=basketball"><i class="fas fa-basketball-ball"></i> 篮球游戏</a></li>
+                <li><a href="category.html?category=beauty"><i class="fas fa-paint-brush"></i> 美容游戏</a></li>
+                <li><a href="category.html?category=bike"><i class="fas fa-bicycle"></i> 自行车游戏</a></li>
+                <li><a href="category.html?category=car"><i class="fas fa-car"></i> 汽车游戏</a></li>
+                <li><a href="category.html?category=card"><i class="fas fa-cards"></i> 卡牌游戏</a></li>
+                <li><a href="category.html?category=casual"><i class="fas fa-dice"></i> 休闲游戏</a></li>
+                <li><a href="category.html?category=clicker"><i class="fas fa-mouse"></i> 点击游戏</a></li>
+            </ul>
+            <a href="#" class="more-categories">更多分类 <i class="fas fa-chevron-down"></i></a>
+        </div>
+    </div>
+
+    <!-- 游戏内容 -->
+    <main>
+        <div class="game-container">
+            <!-- 游戏标题 -->
+            <div class="game-header">
+                <a href="index.html" class="back-button"><i class="fas fa-arrow-left"></i> 返回</a>
+                <h1 class="game-title">太空射击</h1>
+            </div>
+            
+            <!-- 游戏窗口 -->
+            <div class="game-frame-container" id="game-container">
+                <!-- 游戏将通过JavaScript加载到这里 -->
+            </div>
+            
+            <!-- 游戏信息区域 -->
+            <div class="game-info-grid">
+                <!-- 游戏描述 -->
+                <div class="game-description">
+                    <h2>关于太空射击</h2>
+                    <p>太空射击是一款经典的射击游戏，玩家将控制一艘飞船，在宇宙中与外星入侵者作战。这款游戏融合了经典的街机风格和现代的游戏设计，为玩家提供了紧张刺激的太空战斗体验。</p>
+                    <p>游戏中，玩家需要通过移动飞船来躲避敌人的攻击，同时利用武器系统摧毁外星入侵者。每消灭一个敌人，玩家都会获得分数。随着游戏的进行，难度会逐渐增加，敌人会变得更加强大和迅速。</p>
+                    <p>这款游戏适合所有年龄段的玩家，无论你是射击游戏的新手还是老手，都能在这里找到乐趣。挑战自己，看看你能获得多高的分数！</p>
+                    
+                    <div class="controls">
+                        <h3>游戏控制</h3>
+                        <ul>
+                            <li><span class="key">W</span><span class="key">A</span><span class="key">S</span><span class="key">D</span> 或 <span class="key">↑</span><span class="key">←</span><span class="key">↓</span><span class="key">→</span> - 移动飞船</li>
+                            <li><span class="key">空格</span> - 发射武器</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 游戏侧边栏 -->
+                <div class="game-sidebar">
+                    <!-- 游戏操作按钮 -->
+                    <div class="game-actions">
+                        <button class="play-button" id="play-button"><i class="fas fa-play"></i> 玩游戏</button>
+                        <div class="action-buttons">
+                            <button class="action-btn" id="favorite-button">
+                                <i class="fas fa-heart"></i>
+                                收藏
+                            </button>
+                            <button class="action-btn" id="share-button">
+                                <i class="fas fa-share-alt"></i>
+                                分享
+                            </button>
+                            <button class="action-btn" id="fullscreen-button">
+                                <i class="fas fa-expand"></i>
+                                全屏
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏详情 -->
+                    <div class="game-details">
+                        <h3>游戏详情</h3>
+                        <div class="detail-item">
+                            <div class="detail-label">发布日期</div>
+                            <div class="detail-value">2024-03-25</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">游戏类型</div>
+                            <div class="detail-value">动作, 射击, 太空</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">平台</div>
+                            <div class="detail-value">网页, 移动设备</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">语言</div>
+                            <div class="detail-value">多语言</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">控制方式</div>
+                            <div class="detail-value">键盘</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">玩家评分</div>
+                            <div class="detail-value">4.8/5.0</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 游戏作者 -->
+                    <div class="game-author">
+                        <h3>开发者</h3>
+                        <div class="author-avatar">
+                            <img src="public/images/developer.jpg" alt="Developer Avatar">
+                        </div>
+                        <div class="author-name">CrazyDev Studios</div>
+                        <div class="author-info">太空游戏专家</div>
+                        <a href="#" class="author-link">查看所有游戏 <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 相关游戏 -->
+            <div class="related-games">
+                <h2>你可能也喜欢</h2>
+                <div class="related-games-grid" id="related-games-container">
+                    <!-- 相关游戏将通过JavaScript加载到这里 -->
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h3>了解更多</h3>
+                    <ul>
+                        <li><a href="#">关于我们</a></li>
+                        <li><a href="#">开发者</a></li>
+                        <li><a href="#">儿童网站</a></li>
+                        <li><a href="#">工作机会</a></li>
+                        <li><a href="#">家长信息</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>游戏分类</h3>
+                    <ul>
+                        <li><a href="category.html?category=two-player">双人游戏</a></li>
+                        <li><a href="category.html?category=action">动作游戏</a></li>
+                        <li><a href="category.html?category=adventure">冒险游戏</a></li>
+                        <li><a href="category.html?category=basketball">篮球游戏</a></li>
+                        <li><a href="category.html?category=beauty">美容游戏</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>语言</h3>
+                    <ul>
+                        <li><a href="#" data-lang="zh">中文</a></li>
+                        <li><a href="#" data-lang="en">English</a></li>
+                        <li><a href="#" data-lang="es">Español</a></li>
+                        <li><a href="#" data-lang="fr">Français</a></li>
+                        <li><a href="#" data-lang="de">Deutsch</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>条款与政策</h3>
+                    <ul>
+                        <li><a href="#">条款和条件</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                        <li><a href="#">所有游戏</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrazyGames</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="public/js/main.js"></script>
+    <script src="public/js/game-loader.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取URL参数中的游戏ID
+            const urlParams = new URLSearchParams(window.location.search);
+            const gameId = urlParams.get('id') || 'spaceshooter'; // 默认太空射击游戏
+            
+            // 创建游戏加载器
+            const gameLoader = new GameLoader('game-container');
+            let isGameLoaded = false;
+            
+            // 播放按钮点击事件
+            document.getElementById('play-button').addEventListener('click', function() {
+                if (!isGameLoaded) {
+                    gameLoader.loadGame(gameId);
+                    isGameLoaded = true;
+                    this.innerHTML = '<i class="fas fa-pause"></i> 暂停游戏';
+                } else {
+                    // 游戏已加载，切换暂停/继续
+                    if (this.innerHTML.includes('暂停')) {
+                        this.innerHTML = '<i class="fas fa-play"></i> 继续游戏';
+                        // 在实际应用中，这里会调用游戏的暂停API
+                    } else {
+                        this.innerHTML = '<i class="fas fa-pause"></i> 暂停游戏';
+                        // 在实际应用中，这里会调用游戏的继续API
+                    }
+                }
+            });
+            
+            // 全屏按钮点击事件
+            document.getElementById('fullscreen-button').addEventListener('click', function() {
+                if (gameLoader && isGameLoaded) {
+                    gameLoader.toggleFullscreen();
+                } else {
+                    alert('请先开始游戏');
+                }
+            });
+            
+            // 收藏按钮点击事件
+            document.getElementById('favorite-button').addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-heart" style="color: red;"></i> 已收藏';
+                alert('游戏已添加到收藏！');
+            });
+            
+            // 分享按钮点击事件
+            document.getElementById('share-button').addEventListener('click', function() {
+                alert('分享功能将在此实现');
+            });
+            
+            // 加载推荐游戏
+            loadRecommendedGames();
+            
+            // 监听游戏加载事件
+            window.addEventListener('gameLoaded', function(event) {
+                console.log(`游戏已加载: ${event.detail.gameName}`);
+                // 更新页面标题
+                document.title = `${event.detail.gameName} - CrazyGames`;
+                // 更新游戏标题
+                document.querySelector('.game-title').textContent = event.detail.gameName;
+            });
+            
+            // 监听游戏停止事件
+            window.addEventListener('gameStopped', function(event) {
+                console.log(`游戏已停止: ${event.detail.gameName}, 游戏时长: ${event.detail.playTime}秒`);
+                isGameLoaded = false;
+                document.getElementById('play-button').innerHTML = '<i class="fas fa-play"></i> 玩游戏';
+            });
+        });
+        
+        // 加载推荐游戏
+        function loadRecommendedGames() {
+            const relatedGamesContainer = document.getElementById('related-games-container');
+            
+            // 清空容器
+            relatedGamesContainer.innerHTML = '';
+            
+            // 模拟推荐游戏数据
+            const recommendedGames = [
+                {
+                    id: 'snake',
+                    name: '贪吃蛇',
+                    thumbnail: 'public/images/related1.jpg'
+                },
+                {
+                    id: 'game2',
+                    name: '太空探险',
+                    thumbnail: 'public/images/related2.jpg'
+                },
+                {
+                    id: 'game3',
+                    name: '小行星猎人',
+                    thumbnail: 'public/images/related3.jpg'
+                },
+                {
+                    id: 'game4',
+                    name: '星球大战',
+                    thumbnail: 'public/images/related4.jpg'
+                },
+                {
+                    id: 'game5',
+                    name: '宇宙战斗',
+                    thumbnail: 'public/images/related5.jpg'
+                }
+            ];
+            
+            // 生成游戏卡片
+            recommendedGames.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    <div class="game-thumbnail">
+                        <img src="${game.thumbnail}" alt="${game.name}">
+                    </div>
+                    <div class="game-info">
+                        <h3>${game.name}</h3>
+                    </div>
+                `;
+                
+                // 添加点击事件
+                gameCard.addEventListener('click', function() {
+                    if (game.id === 'snake') {
+                        window.location.href = `game.html?id=${game.id}`;
+                    } else {
+                        alert(`您选择了游戏: ${game.name}`);
+                    }
+                });
+                
+                // 添加到容器
+                relatedGamesContainer.appendChild(gameCard);
+            });
+        }
+    </script>
+</body>
+</html> 

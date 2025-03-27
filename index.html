@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HelloGame - 免费在线HTML5游戏</title>
+    <meta name="description" content="HelloGame是一个提供免费在线HTML5游戏的平台，包括动作、益智、策略等多种类型游戏。">
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preload" href="/public/js/game-loader.js" as="script">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="/public/images/logo.png" alt="HelloGame" class="lazy">
+                <span>HelloGame</span>
+            </a>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">首页</a></li>
+                    <li><a href="category.html?category=热门">热门游戏</a></li>
+                    <li><a href="category.html?category=新游戏">新游戏</a></li>
+                    <li><a href="category.html?category=推荐">推荐</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="搜索游戏...">
+                    <button type="button"><i class="fas fa-search"></i></button>
+                </div>
+                <div class="language-selector">
+                    <button type="button" class="lang-btn">
+                        <i class="fas fa-globe"></i>
+                        <span>中文</span>
+                    </button>
+                    <div class="language-dropdown">
+                        <a href="#" data-lang="zh">中文</a>
+                        <a href="#" data-lang="en">English</a>
+                    </div>
+                </div>
+                <button type="button" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>探索数千款免费在线游戏</h1>
+                <p>从动作冒险到益智游戏，HelloGame为您提供各种类型的免费游戏体验。无需下载，即点即玩！</p>
+                <div class="hero-buttons">
+                    <a href="category.html?category=热门" class="btn primary">浏览热门游戏</a>
+                    <a href="category.html?category=新游戏" class="btn secondary">查看新游戏</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img data-src="/public/images/hero-image.jpg" alt="游戏精选" class="lazy">
+            </div>
+        </section>
+
+        <section class="categories-nav">
+            <div class="container">
+                <a href="category.html?category=动作">动作游戏</a>
+                <a href="category.html?category=益智">益智游戏</a>
+                <a href="category.html?category=策略">策略游戏</a>
+                <a href="category.html?category=射击">射击游戏</a>
+                <a href="category.html?category=冒险">冒险游戏</a>
+                <a href="category.html?category=休闲">休闲游戏</a>
+                <a href="category.html?category=模拟">模拟游戏</a>
+                <a href="category.html?category=多人">多人游戏</a>
+            </div>
+        </section>
+
+        <section class="featured-games">
+            <div class="container">
+                <div class="section-header">
+                    <h2>精选游戏</h2>
+                    <a href="category.html?category=精选" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="games-grid" id="featured-games">
+                    <!-- 游戏卡片将在这里动态加载 -->
+                    <div class="games-loading">
+                        <div class="spinner"></div>
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="original-games">
+            <div class="container">
+                <div class="section-header">
+                    <h2>HelloGame原创</h2>
+                    <a href="category.html?category=原创" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="original-games-grid">
+                    <div class="original-game-card large">
+                        <a href="game.html?id=snake">
+                            <div class="original-game-img">
+                                <img data-src="/public/images/games/snake.jpg" alt="贪吃蛇" class="lazy">
+                            </div>
+                            <div class="original-game-info">
+                                <h3>贪吃蛇</h3>
+                                <p>经典的贪吃蛇游戏，控制蛇吃食物并不断成长，但要避免撞到墙壁或自己的身体！</p>
+                                <div class="game-meta">
+                                    <span class="game-category">休闲</span>
+                                    <span class="game-rating">4.5 ⭐</span>
+                                </div>
+                                <button class="btn primary">立即游玩</button>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="original-game-card">
+                        <a href="game.html?id=spaceshooter">
+                            <div class="original-game-img">
+                                <img data-src="/public/images/games/spaceshooter.jpg" alt="太空射击" class="lazy">
+                            </div>
+                            <div class="original-game-info">
+                                <h3>太空射击</h3>
+                                <p>控制宇宙飞船击败外星入侵者！</p>
+                                <div class="game-meta">
+                                    <span class="game-category">射击</span>
+                                    <span class="game-rating">4.7 ⭐</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="original-game-card">
+                        <a href="game.html?id=2048">
+                            <div class="original-game-img">
+                                <img data-src="/public/images/games/2048.jpg" alt="2048" class="lazy">
+                            </div>
+                            <div class="original-game-info">
+                                <h3>2048</h3>
+                                <p>通过合并相同数字的方块来获得2048。</p>
+                                <div class="game-meta">
+                                    <span class="game-category">益智</span>
+                                    <span class="game-rating">4.8 ⭐</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="popular-games">
+            <div class="container">
+                <div class="section-header">
+                    <h2>热门游戏</h2>
+                    <a href="category.html?category=热门" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="games-grid" id="popular-games">
+                    <!-- 游戏卡片将在这里动态加载 -->
+                    <div class="games-loading">
+                        <div class="spinner"></div>
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="new-games">
+            <div class="container">
+                <div class="section-header">
+                    <h2>新游戏</h2>
+                    <a href="category.html?category=新游戏" class="view-all">查看全部 <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="games-grid" id="new-games">
+                    <!-- 游戏卡片将在这里动态加载 -->
+                    <div class="games-loading">
+                        <div class="spinner"></div>
+                        <p>加载中...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="about-section">
+            <div class="container">
+                <div class="about-content">
+                    <h2>关于 HelloGame</h2>
+                    <p>HelloGame 是一个专注于 HTML5 游戏的在线平台，提供各种类型的免费游戏。我们致力于为玩家提供高质量、无需下载的游戏体验，让您随时随地都能享受游戏的乐趣。</p>
+                    <p>无论您是休闲玩家还是硬核游戏爱好者，HelloGame 都能满足您的需求。我们的游戏库不断更新，为您带来最新最好玩的游戏。</p>
+                    <p>如果您是游戏开发者，欢迎将您的作品提交到我们的平台，与全球玩家分享您的创意！</p>
+                    <a href="#" class="btn secondary">了解更多</a>
+                </div>
+                <div class="about-image">
+                    <img data-src="/public/images/about-image.jpg" alt="关于 HelloGame" class="lazy">
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>关于我们</h3>
+                <ul>
+                    <li><a href="#">关于 HelloGame</a></li>
+                    <li><a href="#">联系我们</a></li>
+                    <li><a href="#">加入我们</a></li>
+                    <li><a href="#">博客</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>支持</h3>
+                <ul>
+                    <li><a href="#">常见问题</a></li>
+                    <li><a href="#">开发者支持</a></li>
+                    <li><a href="#">问题反馈</a></li>
+                    <li><a href="#">隐私政策</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>开发者</h3>
+                <ul>
+                    <li><a href="#">提交游戏</a></li>
+                    <li><a href="#">开发者工具</a></li>
+                    <li><a href="#">API文档</a></li>
+                    <li><a href="#">成功案例</a></li>
+                </ul>
+            </div>
+            <div class="footer-column social">
+                <h3>关注我们</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-discord"></i></a>
+                </div>
+                <p>订阅我们的邮件，获取最新游戏资讯</p>
+                <div class="subscribe-form">
+                    <input type="email" placeholder="您的邮箱地址">
+                    <button type="button">订阅</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2023 HelloGame. 保留所有权利。</p>
+            <ul class="footer-links">
+                <li><a href="#">服务条款</a></li>
+                <li><a href="#">隐私政策</a></li>
+                <li><a href="#">Cookie政策</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script type="module">
+        // 导入工具类
+        import { getAllGames, getRecommendedGames } from '/src/api/gamesApi.js';
+        import ImageOptimizer from '/src/utils/ImageOptimizer.js';
+        import ResourceLoader from '/src/utils/ResourceLoader.js';
+        import RecommendationEngine from '/src/utils/RecommendationEngine.js';
+        
+        // 创建资源加载器实例
+        const resourceLoader = new ResourceLoader({
+            concurrency: 8,
+            cacheEnabled: true,
+            priorityLevels: 3
+        });
+        
+        // 创建图片优化器实例
+        const imageOptimizer = new ImageOptimizer({
+            lazyLoadEnabled: true,
+            lazyLoadThreshold: 300,
+            webpEnabled: true
+        });
+        
+        // 默认空的推荐引擎
+        let recommendationEngine = null;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化图片懒加载
+            imageOptimizer.init('img.lazy');
+            
+            // 加载游戏数据
+            loadGamesData();
+            
+            // 监听语言切换
+            setupLanguageSelector();
+            
+            // 监听暗黑模式切换
+            setupDarkModeToggle();
+            
+            // 监听搜索框
+            setupSearchBox();
+        });
+        
+        // 加载游戏数据
+        async function loadGamesData() {
+            try {
+                // 并行加载多个游戏分类
+                const [allGames, featuredGames, newGames] = await Promise.all([
+                    getAllGames({ limit: 20 }),
+                    getRecommendedGames('featured', 8),
+                    getRecommendedGames('new', 8)
+                ]);
+                
+                // 创建推荐引擎
+                recommendationEngine = new RecommendationEngine(allGames);
+                recommendationEngine.loadUserHistory();
+                
+                // 显示精选游戏
+                displayGames('featured-games', featuredGames);
+                
+                // 显示热门游戏
+                const popularGames = allGames
+                    .sort((a, b) => (b.playCount || 0) - (a.playCount || 0))
+                    .slice(0, 8);
+                displayGames('popular-games', popularGames);
+                
+                // 显示新游戏
+                displayGames('new-games', newGames);
+                
+                // 预加载关键资源
+                preloadResources(allGames);
+            } catch (error) {
+                console.error('加载游戏数据失败:', error);
+                document.querySelectorAll('.games-loading').forEach(el => {
+                    el.innerHTML = '<p>加载游戏失败，请稍后再试</p>';
+                });
+            }
+        }
+        
+        // 显示游戏
+        function displayGames(containerId, games) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            
+            // 清空加载提示
+            container.innerHTML = '';
+            
+            if (!games || games.length === 0) {
+                container.innerHTML = '<p>暂无游戏</p>';
+                return;
+            }
+            
+            // 添加游戏卡片
+            games.forEach(game => {
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    <a href="game.html?id=${game.id}">
+                        <div class="game-card-thumbnail">
+                            <img data-src="${game.thumbnail}" alt="${game.title}" class="lazy">
+                            <div class="game-card-rating">${game.rating || '4.0'} ⭐</div>
+                        </div>
+                        <div class="game-card-info">
+                            <h3 class="game-card-title">${game.title}</h3>
+                            <p class="game-card-category">${game.categories ? game.categories.join(', ') : '休闲'}</p>
+                        </div>
+                    </a>
+                `;
+                container.appendChild(gameCard);
+            });
+            
+            // 刷新懒加载
+            imageOptimizer.refresh();
+        }
+        
+        // 设置语言选择器
+        function setupLanguageSelector() {
+            const langBtn = document.querySelector('.lang-btn');
+            const langDropdown = document.querySelector('.language-dropdown');
+            
+            if (langBtn && langDropdown) {
+                langBtn.addEventListener('click', () => {
+                    langDropdown.classList.toggle('active');
+                });
+                
+                // 点击语言选项
+                document.querySelectorAll('.language-dropdown a').forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const lang = e.target.getAttribute('data-lang');
+                        changeLanguage(lang);
+                        langDropdown.classList.remove('active');
+                        langBtn.querySelector('span').textContent = e.target.textContent;
+                    });
+                });
+                
+                // 点击其他区域关闭下拉菜单
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.language-selector')) {
+                        langDropdown.classList.remove('active');
+                    }
+                });
+            }
+        }
+        
+        // 设置暗黑模式切换
+        function setupDarkModeToggle() {
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            if (themeToggle) {
+                // 检查本地存储的主题偏好
+                const isDarkMode = localStorage.getItem('darkMode') === 'true';
+                
+                // 应用初始主题
+                if (isDarkMode) {
+                    document.body.classList.add('dark-mode');
+                    themeToggle.querySelector('i').classList.remove('fa-moon');
+                    themeToggle.querySelector('i').classList.add('fa-sun');
+                }
+                
+                // 切换主题
+                themeToggle.addEventListener('click', () => {
+                    document.body.classList.toggle('dark-mode');
+                    const icon = themeToggle.querySelector('i');
+                    
+                    if (document.body.classList.contains('dark-mode')) {
+                        icon.classList.remove('fa-moon');
+                        icon.classList.add('fa-sun');
+                        localStorage.setItem('darkMode', 'true');
+                    } else {
+                        icon.classList.remove('fa-sun');
+                        icon.classList.add('fa-moon');
+                        localStorage.setItem('darkMode', 'false');
+                    }
+                });
+            }
+        }
+        
+        // 设置搜索框
+        function setupSearchBox() {
+            const searchBox = document.querySelector('.search-box');
+            
+            if (searchBox) {
+                const searchInput = searchBox.querySelector('input');
+                const searchButton = searchBox.querySelector('button');
+                
+                // 搜索按钮点击事件
+                searchButton.addEventListener('click', () => {
+                    const query = searchInput.value.trim();
+                    if (query) {
+                        window.location.href = `category.html?search=${encodeURIComponent(query)}`;
+                    }
+                });
+                
+                // 回车键搜索
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const query = searchInput.value.trim();
+                        if (query) {
+                            window.location.href = `category.html?search=${encodeURIComponent(query)}`;
+                        }
+                    }
+                });
+            }
+        }
+        
+        // 更改语言
+        function changeLanguage(lang) {
+            // 实际项目中应该从服务器加载对应语言的文本
+            console.log(`语言已切换为: ${lang}`);
+            
+            // 存储语言选择
+            localStorage.setItem('language', lang);
+            
+            // 刷新页面以应用新语言
+            // 实际项目中可以动态更新文本而不刷新
+            // window.location.reload();
+        }
+        
+        // 预加载关键资源
+        function preloadResources(games) {
+            if (!games || games.length === 0) return;
+            
+            // 预加载前5个游戏的缩略图
+            const criticalImages = games.slice(0, 5).map(game => game.thumbnail);
+            
+            criticalImages.forEach(imageUrl => {
+                resourceLoader.load(imageUrl, {
+                    type: 'image',
+                    priority: 0 // 最高优先级
+                });
+            });
+            
+            // 预加载其他游戏缩略图
+            const otherImages = games.slice(5).map(game => game.thumbnail);
+            
+            otherImages.forEach(imageUrl => {
+                resourceLoader.load(imageUrl, {
+                    type: 'image',
+                    priority: 2 // 低优先级
+                });
+            });
+        }
+    </script>
+</body>
+</html> 

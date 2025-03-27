@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏分类 - CrazyGames</title>
+    <link rel="stylesheet" href="public/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="/">
+                    <img src="public/images/logo.png" alt="CrazyGames Logo">
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> 首页</a></li>
+                    <li><a href="#"><i class="fas fa-history"></i> 最近玩过</a></li>
+                    <li><a href="#"><i class="fas fa-star"></i> 新游戏</a></li>
+                    <li><a href="#"><i class="fas fa-fire"></i> 热门游戏</a></li>
+                    <li><a href="#"><i class="fas fa-sync"></i> 更新游戏</a></li>
+                    <li><a href="#"><i class="fas fa-gamepad"></i> 原创游戏</a></li>
+                    <li><a href="#"><i class="fas fa-users"></i> 多人游戏</a></li>
+                </ul>
+            </nav>
+            <div class="language-selector">
+                <select id="language">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- 游戏分类导航 -->
+    <div class="categories-nav">
+        <div class="container">
+            <ul>
+                <li><a href="category.html?category=two-player" class="active"><i class="fas fa-users"></i> 双人游戏</a></li>
+                <li><a href="category.html?category=action"><i class="fas fa-running"></i> 动作游戏</a></li>
+                <li><a href="category.html?category=adventure"><i class="fas fa-mountain"></i> 冒险游戏</a></li>
+                <li><a href="category.html?category=basketball"><i class="fas fa-basketball-ball"></i> 篮球游戏</a></li>
+                <li><a href="category.html?category=beauty"><i class="fas fa-paint-brush"></i> 美容游戏</a></li>
+                <li><a href="category.html?category=bike"><i class="fas fa-bicycle"></i> 自行车游戏</a></li>
+                <li><a href="category.html?category=car"><i class="fas fa-car"></i> 汽车游戏</a></li>
+                <li><a href="category.html?category=card"><i class="fas fa-cards"></i> 卡牌游戏</a></li>
+                <li><a href="category.html?category=casual"><i class="fas fa-dice"></i> 休闲游戏</a></li>
+                <li><a href="category.html?category=clicker"><i class="fas fa-mouse"></i> 点击游戏</a></li>
+            </ul>
+            <a href="#" class="more-categories">更多分类 <i class="fas fa-chevron-down"></i></a>
+        </div>
+    </div>
+
+    <!-- 主要内容 -->
+    <main>
+        <div class="container">
+            <!-- 分类标题 -->
+            <div class="category-header">
+                <h1><i class="fas fa-users"></i> 双人游戏</h1>
+                <p>可以两人一起玩的有趣游戏。这些游戏设计为让两位玩家可以在同一设备上或者通过网络连接一起玩。</p>
+            </div>
+
+            <!-- 筛选选项 -->
+            <div class="filter-options">
+                <div class="sort-by">
+                    <label for="sort">排序方式:</label>
+                    <select id="sort">
+                        <option value="popular">最受欢迎</option>
+                        <option value="newest">最新发布</option>
+                        <option value="rating">评分最高</option>
+                    </select>
+                </div>
+                <div class="filter-by">
+                    <button class="filter-btn active">全部</button>
+                    <button class="filter-btn">本地多人</button>
+                    <button class="filter-btn">在线多人</button>
+                </div>
+            </div>
+
+            <!-- 游戏列表 -->
+            <div class="games-grid">
+                <!-- 游戏卡片 -->
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game1.jpg" alt="Game 1">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人射击对战</h3>
+                        <div class="game-tags">
+                            <span class="tag">动作</span>
+                            <span class="tag">射击</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game2.jpg" alt="Game 2">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人足球挑战</h3>
+                        <div class="game-tags">
+                            <span class="tag">体育</span>
+                            <span class="tag">足球</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game3.jpg" alt="Game 3">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人迷宫探险</h3>
+                        <div class="game-tags">
+                            <span class="tag">冒险</span>
+                            <span class="tag">解谜</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game4.jpg" alt="Game 4">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人坦克大战</h3>
+                        <div class="game-tags">
+                            <span class="tag">动作</span>
+                            <span class="tag">射击</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game5.jpg" alt="Game 5">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人赛车挑战</h3>
+                        <div class="game-tags">
+                            <span class="tag">赛车</span>
+                            <span class="tag">竞速</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game6.jpg" alt="Game 6">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人格斗大赛</h3>
+                        <div class="game-tags">
+                            <span class="tag">格斗</span>
+                            <span class="tag">动作</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game7.jpg" alt="Game 7">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人烹饪挑战</h3>
+                        <div class="game-tags">
+                            <span class="tag">休闲</span>
+                            <span class="tag">模拟</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game8.jpg" alt="Game 8">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人弹球游戏</h3>
+                        <div class="game-tags">
+                            <span class="tag">休闲</span>
+                            <span class="tag">街机</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game9.jpg" alt="Game 9">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人飞行模拟</h3>
+                        <div class="game-tags">
+                            <span class="tag">模拟</span>
+                            <span class="tag">飞行</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game10.jpg" alt="Game 10">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人棋类游戏</h3>
+                        <div class="game-tags">
+                            <span class="tag">棋盘</span>
+                            <span class="tag">策略</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game11.jpg" alt="Game 11">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人拼图挑战</h3>
+                        <div class="game-tags">
+                            <span class="tag">解谜</span>
+                            <span class="tag">休闲</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="game-card">
+                    <div class="game-thumbnail">
+                        <img src="public/images/game12.jpg" alt="Game 12">
+                    </div>
+                    <div class="game-info">
+                        <h3>双人冒险岛</h3>
+                        <div class="game-tags">
+                            <span class="tag">冒险</span>
+                            <span class="tag">平台</span>
+                            <span class="tag">双人</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 加载更多 -->
+            <div class="load-more">
+                <button id="load-more-btn">加载更多游戏</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <div class="footer-section">
+                    <h3>了解更多</h3>
+                    <ul>
+                        <li><a href="#">关于我们</a></li>
+                        <li><a href="#">开发者</a></li>
+                        <li><a href="#">儿童网站</a></li>
+                        <li><a href="#">工作机会</a></li>
+                        <li><a href="#">家长信息</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>游戏分类</h3>
+                    <ul>
+                        <li><a href="category.html?category=two-player">双人游戏</a></li>
+                        <li><a href="category.html?category=action">动作游戏</a></li>
+                        <li><a href="category.html?category=adventure">冒险游戏</a></li>
+                        <li><a href="category.html?category=basketball">篮球游戏</a></li>
+                        <li><a href="category.html?category=beauty">美容游戏</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>语言</h3>
+                    <ul>
+                        <li><a href="#" data-lang="zh">中文</a></li>
+                        <li><a href="#" data-lang="en">English</a></li>
+                        <li><a href="#" data-lang="es">Español</a></li>
+                        <li><a href="#" data-lang="fr">Français</a></li>
+                        <li><a href="#" data-lang="de">Deutsch</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>条款与政策</h3>
+                    <ul>
+                        <li><a href="#">条款和条件</a></li>
+                        <li><a href="#">隐私政策</a></li>
+                        <li><a href="#">所有游戏</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CrazyGames</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="public/js/main.js"></script>
+    <script>
+        // 分类页面特定脚本
+        document.addEventListener('DOMContentLoaded', function() {
+            // 获取URL参数中的分类
+            const urlParams = new URLSearchParams(window.location.search);
+            const category = urlParams.get('category') || 'two-player';
+
+            // 更新分类导航中的活动状态
+            const categoryLinks = document.querySelectorAll('.categories-nav a');
+            categoryLinks.forEach(link => {
+                if (link.href.includes(`category=${category}`)) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            // 更新页面标题
+            updateCategoryTitle(category);
+
+            // 加载更多按钮点击事件
+            document.getElementById('load-more-btn').addEventListener('click', function() {
+                // 模拟加载更多游戏
+                alert('加载更多游戏功能将在此实现');
+            });
+
+            // 排序选择器变化事件
+            document.getElementById('sort').addEventListener('change', function() {
+                // 模拟排序功能
+                const sortBy = this.value;
+                alert(`将游戏按 ${sortBy} 排序`);
+            });
+
+            // 筛选按钮点击事件
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的活动状态
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // 添加当前按钮的活动状态
+                    this.classList.add('active');
+                    // 模拟筛选功能
+                    alert(`筛选为: ${this.textContent}`);
+                });
+            });
+        });
+
+        /**
+         * 根据分类ID更新页面标题和描述
+         * @param {string} categoryId 分类ID
+         */
+        function updateCategoryTitle(categoryId) {
+            const categoryData = {
+                'two-player': {
+                    name: '双人游戏',
+                    icon: 'users',
+                    description: '可以两人一起玩的有趣游戏。这些游戏设计为让两位玩家可以在同一设备上或者通过网络连接一起玩。'
+                },
+                'action': {
+                    name: '动作游戏',
+                    icon: 'running',
+                    description: '快节奏的游戏，需要良好的反应能力和手眼协调。包括格斗、射击和平台游戏等类型。'
+                },
+                'adventure': {
+                    name: '冒险游戏',
+                    icon: 'mountain',
+                    description: '探索、解谜和故事驱动的游戏体验。玩家通常会扮演主角，进行一段引人入胜的旅程。'
+                },
+                'basketball': {
+                    name: '篮球游戏',
+                    icon: 'basketball-ball',
+                    description: '模拟篮球运动的游戏，包括街头篮球、NBA模拟和各种投篮挑战。'
+                },
+                'beauty': {
+                    name: '美容游戏',
+                    icon: 'paint-brush',
+                    description: '与时尚、美妆和造型相关的游戏，让玩家可以展示创意和设计才能。'
+                }
+            };
+
+            const categoryInfo = categoryData[categoryId] || categoryData['two-player'];
+            
+            // 更新标题和图标
+            const titleElement = document.querySelector('.category-header h1');
+            titleElement.innerHTML = `<i class="fas fa-${categoryInfo.icon}"></i> ${categoryInfo.name}`;
+            
+            // 更新描述
+            const descriptionElement = document.querySelector('.category-header p');
+            descriptionElement.textContent = categoryInfo.description;
+            
+            // 更新页面标题
+            document.title = `${categoryInfo.name} - CrazyGames`;
+        }
+    </script>
+</body>
+</html> 
